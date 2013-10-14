@@ -4,8 +4,10 @@
     <string name="app_name">Andchat</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="addfriend">Add a Friend</string>
     <string name="send">Send</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="title_activity_display_message">My Message</string>
+    <string name="edit_name">Enter a name</string>
+    <string name="title_activity_display_message">Chat History</string>
+    <string name="action_search">Search</string>
 
 </resources>

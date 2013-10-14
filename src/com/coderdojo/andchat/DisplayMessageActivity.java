@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+
+
 
 public class DisplayMessageActivity extends Activity {
 
@@ -29,7 +33,7 @@ public class DisplayMessageActivity extends Activity {
 	    // Set the text view as the activity layout
 	    setContentView(textView);
 
-		
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	/**
