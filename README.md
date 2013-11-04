@@ -1,4 +1,4 @@
 ![Andchat](http://davidkirwan.github.io/andchat/andchat-architecture.png)
 
-This version of the software has v7-support-library integration. However we have decided not to use the
-features due to the difficulty in getting the library integrated on everyones machine.
+The source code relating to v7 support library should be removed from this branch now. All source related to v7 is contained
+within the branch 'v7-support-lib-integration'
