@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
+
+
+
 public class DisplayMessageActivity extends Activity {
 
 	@Override
@@ -29,7 +32,7 @@ public class DisplayMessageActivity extends Activity {
 	    // Set the text view as the activity layout
 	    setContentView(textView);
 
-		
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	/**
