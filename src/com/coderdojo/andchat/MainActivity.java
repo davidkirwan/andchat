@@ -1,10 +1,13 @@
 package com.coderdojo.andchat;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,13 +21,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 
 
 public class MainActivity extends Activity  {
 	public final static String EXTRA_MESSAGE = "com.coderdojo.andchat.MESSAGE";
-	public final static String LISTITEMS1 = "listItems1";
+	public final static String LISTITEMS = "listItems";
 	
-	public ArrayList<StringParcel> listItems;
+	public ArrayList<String> listItems;
     
 
     @Override
@@ -32,29 +38,26 @@ public class MainActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-     // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) 
+        listItems = new ArrayList<String>();
+        
+        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        String listItemsJson = sharedPref.getString(LISTITEMS, null);
+        
+        if(listItemsJson != null)
         {
-            // Restore value of members from saved state
-        	listItems = savedInstanceState.getParcelableArrayList(LISTITEMS1);
-        } 
-        else 
-        {
-        	listItems = new ArrayList<StringParcel>();
+        	listItems = new Gson().fromJson(listItemsJson, this.listItems.getClass());
         }
-        
-        
-        String str = new String("No friends yet, why not add some!");
-        
-        ArrayAdapter<StringParcel> adapter;
-        adapter = new ArrayAdapter<StringParcel>(this, android.R.layout.simple_list_item_1,
+
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
         									listItems);
         ListView listView = (ListView) findViewById(R.id.listView1);
         listView.setAdapter(adapter);
         
         if(listItems.size() == 0)
         {
-        	listItems.add(new StringParcel(str));
+        	String str = new String("No friends yet, why not add some!");
+        	listItems.add(str);
         	adapter.notifyDataSetChanged();
         }
         
@@ -76,6 +79,14 @@ public class MainActivity extends Activity  {
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
+
+        String listItemsJson = new Gson().toJson(this.listItems);
+        
+        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(LISTITEMS, listItemsJson);
+        editor.commit();
+        
         Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
     }
     
@@ -106,16 +117,6 @@ public class MainActivity extends Activity  {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
-        savedInstanceState.putParcelableArrayList(LISTITEMS1, listItems);
-        
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
-    
     
     
     public void openSettings()
@@ -150,14 +151,18 @@ public class MainActivity extends Activity  {
     		return;
     	}
     	
-    	ArrayAdapter<StringParcel> adapter;
-        adapter = new ArrayAdapter<StringParcel>(this, android.R.layout.simple_list_item_1,
+    	ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
         									listItems);
         ListView listView = (ListView) findViewById(R.id.listView1);
         listView.setAdapter(adapter);
         
-    	listItems.add(new StringParcel(message));
-    	listItems.set(0, new StringParcel("Number of friends: " + (listItems.size() - 1)));
+    	listItems.add(new String(message));
+    	
+    	if(listItems.get(0).equals("No friends yet, why not add some!"))
+        {
+        	this.listItems.remove(0);
+        }
     	
         adapter.notifyDataSetChanged();
     }
