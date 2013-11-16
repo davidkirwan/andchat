@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.app.ListActivity;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -71,6 +74,16 @@ public class MainActivity extends Activity  {
             	//Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
             	
             	sendMessage(item);
+            }
+        });
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        	@Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        		Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
+        		String item = ((TextView)view).getText().toString();
+        		deleteFriend(item);
+        		return true;
             }
         });
     }
@@ -143,11 +156,17 @@ public class MainActivity extends Activity  {
     {
     	EditText editText = (EditText) findViewById(R.id.edit_message);
     	String message = editText.getText().toString();
+    	editText.setText("");
     	
     	// Ignore if the box is empty
     	if(message.equals(""))
     	{
     		Toast.makeText(getBaseContext(), "You must enter a name first!", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+    	
+    	if(listItems.contains(new String(message))) {
+    		Toast.makeText(getBaseContext(), "You already have this friend!", Toast.LENGTH_LONG).show();
     		return;
     	}
     	
@@ -164,6 +183,15 @@ public class MainActivity extends Activity  {
         	this.listItems.remove(0);
         }
     	
+    	
+        adapter.notifyDataSetChanged();
+    }
+    
+    public void deleteFriend(String friend) {
+    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, listItems);
+        ListView listView = (ListView) findViewById(R.id.listView1);
+        listView.setAdapter(adapter);
+    	listItems.remove(friend);
         adapter.notifyDataSetChanged();
     }
 
