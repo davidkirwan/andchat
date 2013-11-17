@@ -10,5 +10,9 @@
     <string name="title_activity_display_message">Chat History</string>
     <string name="sendMessageButton">Send Message</string>
     <string name="sendMessageSend">Message</string>
+    <string name="delete_friend_ok">Ok</string>
+    <string name="delete_friend_cancel">Cancel</string>
+    <string name="delete_friend_message">Are you sure?</string>
+    <string name="delete_dialog_title">Delete Friend</string>
 
 </resources>

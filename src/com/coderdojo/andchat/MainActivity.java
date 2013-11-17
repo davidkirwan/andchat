@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -80,8 +82,8 @@ public class MainActivity extends Activity  {
         listView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	@Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        		Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
         		String item = ((TextView)view).getText().toString();
+        		//displayDeleteFriendConfirmation(item);
         		deleteFriend(item);
         		return true;
             }
@@ -193,6 +195,32 @@ public class MainActivity extends Activity  {
         listView.setAdapter(adapter);
     	listItems.remove(friend);
         adapter.notifyDataSetChanged();
+        Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
+    }
+    
+    public void displayDeleteFriendConfirmation(final String item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.delete_friend_message)
+        .setTitle(R.string.delete_dialog_title);
+    	
+    	builder.setNegativeButton(R.string.delete_friend_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            	
+        		deleteFriend(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
     }
 
     

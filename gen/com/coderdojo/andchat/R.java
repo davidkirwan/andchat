@@ -45,6 +45,10 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int addfriend=0x7f050003;
         public static final int app_name=0x7f050000;
+        public static final int delete_dialog_title=0x7f05000c;
+        public static final int delete_friend_cancel=0x7f05000a;
+        public static final int delete_friend_message=0x7f05000b;
+        public static final int delete_friend_ok=0x7f050009;
         public static final int edit_name=0x7f050005;
         public static final int hello_world=0x7f050002;
         public static final int send=0x7f050004;
