@@ -8,5 +8,7 @@
     <string name="send">Send</string>
     <string name="edit_name">Enter a name</string>
     <string name="title_activity_display_message">Chat History</string>
+    <string name="sendMessageButton">Send Message</string>
+    <string name="sendMessageSend">Message</string>
 
 </resources>
