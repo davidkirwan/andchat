@@ -1,37 +1,44 @@
 package com.coderdojo.andchat;
 
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
-import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
 
 
 
 public class DisplayMessageActivity extends Activity {
 
+	List<String> messages = new ArrayList<String>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_message);
+		
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
 		// Get the message from the intent
-	    Intent intent = getIntent();
-	    String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-	    // Create the text view
-	    TextView textView = new TextView(this);
-	    textView.setTextSize(40);
-	    textView.setText(message);
-
-	    // Set the text view as the activity layout
-	    setContentView(textView);
+//	    Intent intent = getIntent();
+//	    String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+//
+//	    // Create the text view
+//	    TextView textView = new TextView(this);
+//	    textView.setTextSize(40);
+//	    textView.setText(message);
+//
+//	    // Set the text view as the activity layout
+//	    setContentView(textView);
 
 	    getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
@@ -50,6 +57,20 @@ public class DisplayMessageActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.display_message, menu);
 		return true;
+	}
+	
+	public void sendMessage(View view) {
+		EditText editText = (EditText) findViewById(R.id.sendMessage);
+    	String message = editText.getText().toString();
+    	editText.setText("");
+    	ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        									messages);
+        ListView listView = (ListView) findViewById(R.id.listView2);
+        listView.setAdapter(adapter);
+        
+    	messages.add(new String(message));
+    	adapter.notifyDataSetChanged();
 	}
 
 	@Override

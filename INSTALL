@@ -1,0 +1,17 @@
+Install git
+git clone your forked repo of andchat
+
+git remote add coderdojo https://github.com/davidkirwan/andchat.git
+
+
+
+These commands should sync your forked repo with the master repo
+
+Open your terminal
+cd git
+cd andchat
+git pull coderdojo master
+
+
+If you already have the repository cloned:
+git remote set-url origin git@github.com:username/andchat.git
