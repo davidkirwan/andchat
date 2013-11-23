@@ -1,33 +1,28 @@
 package com.coderdojo.andchat;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.EditText;
-import android.app.ListActivity;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 
 
@@ -45,7 +40,7 @@ public class MainActivity extends Activity  {
         
         listItems = new ArrayList<String>();
         
-        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         String listItemsJson = sharedPref.getString(LISTITEMS, null);
         
         if(listItemsJson != null)
@@ -99,7 +94,7 @@ public class MainActivity extends Activity  {
 
         String listItemsJson = new Gson().toJson(this.listItems);
         
-        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(LISTITEMS, listItemsJson);
         editor.commit();

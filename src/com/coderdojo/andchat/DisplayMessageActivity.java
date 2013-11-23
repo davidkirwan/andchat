@@ -1,6 +1,5 @@
 package com.coderdojo.andchat;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,12 +104,12 @@ public class DisplayMessageActivity extends Activity {
         Time now = new Time();
         now.setToNow();
         now.switchTimezone("GMT");
-        String timeAndDate = now.hour + ":" + now.minute + "  " + now.monthDay + "/" + now.month + "/" + now.year;
-        
+        //String timeAndDate = now.hour + ":" + now.minute + "  " + now.monthDay + "/" + now.month + "/" + now.year;
+        //String timeDate = DateFormat.getInstance().format(System.currentTimeMillis());
         if(you) {
-        	messages.add(new String("You: " + message + "       " +  DateFormat.getInstance().format(System.currentTimeMillis())));
+        	messages.add(new String("You: " + message));
         } else {
-        	messages.add(new String(friend + ": " + message + "       " + DateFormat.getInstance().format(System.currentTimeMillis())));
+        	messages.add(new String(friend + ": " + message));
         }
         you = !you;
     	adapter.notifyDataSetChanged();
