@@ -2,3 +2,10 @@
 .project
 .settings/*
 bin/*
+gen/*
+.classpath
+.project
+.settings/
+*.apk
+*.ap_
+*.class
