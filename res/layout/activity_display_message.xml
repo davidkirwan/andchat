@@ -34,8 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/sendMessageButton"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/sendMessageButton">
+        android:layout_alignRight="@+id/sendMessageButton"
+        android:layout_below="@+id/textView2" >
+
     </ListView>
 
     <TextView
@@ -44,5 +45,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
