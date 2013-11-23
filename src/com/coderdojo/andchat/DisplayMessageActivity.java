@@ -46,6 +46,8 @@ public class DisplayMessageActivity extends Activity {
 	    
 	    TextView v = (TextView) findViewById(R.id.textView3);
 	    v.setText(friend);
+	    
+	    
 //
 //	    // Create the text view
 //	    TextView textView = new TextView(this);

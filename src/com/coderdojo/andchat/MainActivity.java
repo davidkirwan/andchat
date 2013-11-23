@@ -87,6 +87,31 @@ public class MainActivity extends Activity  {
         
     }
     
+    public void addFriendConfirmation(final View item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.delete_message_message)
+        .setTitle(R.string.addfriend);
+    	
+    	builder.setNegativeButton(R.string.delete_message_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            	
+        		addFriend(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
+    }
+    
     
     @Override
     public void onPause() {
@@ -99,13 +124,13 @@ public class MainActivity extends Activity  {
         editor.putString(LISTITEMS, listItemsJson);
         editor.commit();
         
-        Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
     }
     
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        Toast.makeText(getBaseContext(), "Resumed", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Resumed", Toast.LENGTH_LONG).show();
     }
 
 
