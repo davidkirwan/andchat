@@ -83,11 +83,13 @@ public class MainActivity extends Activity  {
         	@Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         		String item = ((TextView)view).getText().toString();
-        		//displayDeleteFriendConfirmation(item);
-        		deleteFriend(item);
+        		displayDeleteFriendConfirmation(item);
+        		//deleteFriend(item);
         		return true;
             }
         });
+        
+        
     }
     
     

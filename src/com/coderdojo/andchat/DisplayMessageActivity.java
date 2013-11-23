@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 
 
@@ -19,6 +25,8 @@ import android.widget.ListView;
 public class DisplayMessageActivity extends Activity {
 
 	List<String> messages = new ArrayList<String>();
+	
+	boolean you = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,22 @@ public class DisplayMessageActivity extends Activity {
 //
 //	    // Set the text view as the activity layout
 //	    setContentView(textView);
+		
+		ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        									messages);
+        ListView listView = (ListView) findViewById(R.id.listView2);
+        listView.setAdapter(adapter);
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        	@Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        		String item = ((TextView)view).getText().toString();
+        		displayDeleteMessageConfirmation(item);
+        		//deleteFriend(item);
+        		return true;
+            }
+        });
 
 	    getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
@@ -68,8 +92,12 @@ public class DisplayMessageActivity extends Activity {
         									messages);
         ListView listView = (ListView) findViewById(R.id.listView2);
         listView.setAdapter(adapter);
-        
-    	messages.add(new String(message));
+        if(you) {
+        	messages.add(new String("You: " + message));
+        } else {
+        	messages.add(new String("Friend: " + message));
+        }
+        you = !you;
     	adapter.notifyDataSetChanged();
 	}
 
@@ -89,5 +117,41 @@ public class DisplayMessageActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+    public void deleteMessage(String friend) {
+    	ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        									messages);
+        ListView listView = (ListView) findViewById(R.id.listView2);
+        listView.setAdapter(adapter);
+    	messages.remove(friend);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(getBaseContext(), "Message Removed", Toast.LENGTH_LONG).show();
+    }
+    
+    public void displayDeleteMessageConfirmation(final String item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.delete_message_message)
+        .setTitle(R.string.delete_message_dialog_title);
+    	
+    	builder.setNegativeButton(R.string.delete_message_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            	
+        		deleteMessage(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
+    }
 
 }

@@ -14,5 +14,10 @@
     <string name="delete_friend_cancel">Cancel</string>
     <string name="delete_friend_message">Are you sure?</string>
     <string name="delete_dialog_title">Delete Friend</string>
+    <string name="delete_message_ok">Ok</string>
+    <string name="delete_message_cancel">Cancel</string>
+    <string name="delete_message_message">Are you sure?</string>
+    <string name="delete_message_title">Delete Message</string>
+    <string name="delete_message_dialog_title">Delete Message</string>
 
 </resources>
