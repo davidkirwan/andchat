@@ -24,14 +24,15 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080007;
-        public static final int add_friend_button=0x7f080004;
-        public static final int edit_message=0x7f080005;
-        public static final int listView1=0x7f080006;
+        public static final int action_settings=0x7f080008;
+        public static final int add_friend_button=0x7f080005;
+        public static final int edit_message=0x7f080006;
+        public static final int listView1=0x7f080007;
         public static final int listView2=0x7f080002;
         public static final int sendMessage=0x7f080001;
         public static final int sendMessageButton=0x7f080000;
         public static final int textView2=0x7f080003;
+        public static final int textView3=0x7f080004;
     }
     public static final class layout {
         public static final int activity_display_message=0x7f030000;
@@ -49,6 +50,11 @@ public final class R {
         public static final int delete_friend_cancel=0x7f05000a;
         public static final int delete_friend_message=0x7f05000b;
         public static final int delete_friend_ok=0x7f050009;
+        public static final int delete_message_cancel=0x7f05000e;
+        public static final int delete_message_dialog_title=0x7f050011;
+        public static final int delete_message_message=0x7f05000f;
+        public static final int delete_message_ok=0x7f05000d;
+        public static final int delete_message_title=0x7f050010;
         public static final int edit_name=0x7f050005;
         public static final int hello_world=0x7f050002;
         public static final int send=0x7f050004;

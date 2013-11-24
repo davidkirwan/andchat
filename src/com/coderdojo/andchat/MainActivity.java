@@ -1,33 +1,28 @@
 package com.coderdojo.andchat;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.EditText;
-import android.app.ListActivity;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 
 
@@ -45,7 +40,7 @@ public class MainActivity extends Activity  {
         
         listItems = new ArrayList<String>();
         
-        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         String listItemsJson = sharedPref.getString(LISTITEMS, null);
         
         if(listItemsJson != null)
@@ -83,11 +78,38 @@ public class MainActivity extends Activity  {
         	@Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         		String item = ((TextView)view).getText().toString();
-        		//displayDeleteFriendConfirmation(item);
-        		deleteFriend(item);
+        		displayDeleteFriendConfirmation(item);
+        		//deleteFriend(item);
         		return true;
             }
         });
+        
+        
+    }
+    
+    public void addFriendConfirmation(final View item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.delete_message_message)
+        .setTitle(R.string.addfriend);
+    	
+    	builder.setNegativeButton(R.string.delete_message_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            	
+        		addFriend(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
     }
     
     
@@ -97,18 +119,18 @@ public class MainActivity extends Activity  {
 
         String listItemsJson = new Gson().toJson(this.listItems);
         
-        SharedPreferences sharedPref = getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(LISTITEMS, listItemsJson);
         editor.commit();
         
-        Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
     }
     
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        Toast.makeText(getBaseContext(), "Resumed", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Resumed", Toast.LENGTH_LONG).show();
     }
 
 

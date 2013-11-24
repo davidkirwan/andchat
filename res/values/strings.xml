@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Andchat</string>
+    <string name="app_name">AndChat</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="addfriend">Add a Friend</string>
     <string name="send">Send</string>
     <string name="edit_name">Enter a name</string>
-    <string name="title_activity_display_message">Chat History</string>
+    <string name="title_activity_display_message">Chat</string>
     <string name="sendMessageButton">Send Message</string>
     <string name="sendMessageSend">Message</string>
     <string name="delete_friend_ok">Ok</string>
     <string name="delete_friend_cancel">Cancel</string>
     <string name="delete_friend_message">Are you sure?</string>
     <string name="delete_dialog_title">Delete Friend</string>
+    <string name="delete_message_ok">Ok</string>
+    <string name="delete_message_cancel">Cancel</string>
+    <string name="delete_message_message">Are you sure?</string>
+    <string name="delete_message_title">Delete Message</string>
+    <string name="delete_message_dialog_title">Delete Message</string>
 
 </resources>
