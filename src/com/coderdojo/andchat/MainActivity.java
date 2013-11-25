@@ -2,6 +2,7 @@ package com.coderdojo.andchat;
 
 import java.util.ArrayList;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,6 +31,7 @@ public class MainActivity extends Activity  {
 	public final static String EXTRA_MESSAGE = "com.coderdojo.andchat.MESSAGE";
 	public final static String LISTITEMS = "listItems";
 	
+	private DBManager datasource;	
 	public ArrayList<String> listItems;
     
 
@@ -39,6 +41,9 @@ public class MainActivity extends Activity  {
         setContentView(R.layout.activity_main);
         
         listItems = new ArrayList<String>();
+        
+        datasource = new DBManager(this);
+		datasource.open();
         
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         String listItemsJson = sharedPref.getString(LISTITEMS, null);
