@@ -11,7 +11,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
 	// Database constants
 	private static final String DATABASE_NAME = "andchat.db";
-	private static final int DATABASE_VERSION = 0;
+	private static final int DATABASE_VERSION = 1;
 	
 	// Users Table
 	public static final String TABLE_USERS = "usersTable";
