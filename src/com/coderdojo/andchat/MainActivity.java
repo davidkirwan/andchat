@@ -83,7 +83,9 @@ public class MainActivity extends Activity  {
         	@Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         		String item = ((TextView)view).getText().toString();
-        		displayDeleteFriendConfirmation(item);
+        		if(!item.equals("No friends yet, why not add some!")) {
+        			displayDeleteFriendConfirmation(item);
+        		}
         		//deleteFriend(item);
         		return true;
             }
@@ -211,7 +213,6 @@ public class MainActivity extends Activity  {
         {
         	this.listItems.remove(0);
         }
-    	
     	
         adapter.notifyDataSetChanged();
     }

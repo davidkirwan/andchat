@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,11 +102,6 @@ public class DisplayMessageActivity extends Activity {
         listView.setAdapter(adapter);
         listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setStackFromBottom(true);
-        Time now = new Time();
-        now.setToNow();
-        now.switchTimezone("GMT");
-        //String timeAndDate = now.hour + ":" + now.minute + "  " + now.monthDay + "/" + now.month + "/" + now.year;
-        //String timeDate = DateFormat.getInstance().format(System.currentTimeMillis());
         if(you) {
         	messages.add(new String("You: " + message));
         } else {
