@@ -1,42 +1,40 @@
 package com.coderdojo.andchat;
 
+
 public class AndchatMessage {
 	
-	private long id;
-	private long to;
-	private long from;
-	private AndchatDate theDate;
-	private String messageContent;
+	private long messageID;
+	private long idSender;
+	private long idReceiver;
+	private String message;
+	private AndchatDate date;
 	
+	public AndchatMessage(long messageID2, long senderID, long receiverID, String message2, AndchatDate date2) {
+		messageID = messageID2;
+		idSender = senderID;
+		idReceiver = receiverID;
+		message = message2;
+		date = date2;
+	}
 	
-	public long getId() {
-		return id;
+	public String getMessage() {
+		return message;
 	}
-	public void setId(long id) {
-		this.id = id;
+	
+	public long getIdOfSender() {
+		return idSender;
 	}
-	public long getTo() {
-		return to;
+	
+	public long getIdOfReceiver() {
+		return idReceiver;
 	}
-	public void setTo(long to) {
-		this.to = to;
+	
+	public AndchatDate getDate() {
+		return date;
 	}
-	public long getFrom() {
-		return from;
+	
+	public long getID() {
+		return messageID;
 	}
-	public void setFrom(long from) {
-		this.from = from;
-	}
-	public AndchatDate getTheDate() {
-		return theDate;
-	}
-	public void setTheDate(AndchatDate theDate) {
-		this.theDate = theDate;
-	}
-	public String getMessageContent() {
-		return messageContent;
-	}
-	public void setMessageContent(String messageContent) {
-		this.messageContent = messageContent;
-	}
+	
 }

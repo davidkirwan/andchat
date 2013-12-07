@@ -1,7 +1,6 @@
 package com.coderdojo.andchat;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DBManager {
 
@@ -44,7 +42,7 @@ public class DBManager {
 		
 		values.put(DBHelper.COLUMN_NAME, u.getName());
 		
-		long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
+		//long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
 		
 	}	
 
@@ -62,9 +60,7 @@ public class DBManager {
 	}
 
 	private AndchatUser cursorToUser(Cursor cursor) {
-		AndchatUser u = new AndchatUser();
-		u.setId(cursor.getInt(0));
-		u.setName(cursor.getString(1));
+		AndchatUser u = new AndchatUser(cursor.getInt(0), cursor.getString(1), null);
 		return u;
 	}
 

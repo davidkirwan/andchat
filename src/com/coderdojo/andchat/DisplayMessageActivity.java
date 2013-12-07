@@ -108,10 +108,13 @@ public class DisplayMessageActivity extends Activity {
         now.switchTimezone("GMT");
         //String timeAndDate = now.hour + ":" + now.minute + "  " + now.monthDay + "/" + now.month + "/" + now.year;
         //String timeDate = DateFormat.getInstance().format(System.currentTimeMillis());
+        
+        //AndchatDate date = new AndchatDate(Integer.toString(now.second), Integer.toString(now.minute), Integer.toString(now.hour), Integer.toString(now.year), Integer.toString(now.month), Integer.toString(now.monthDay));
         if(you) {
-        	messages.add(new String("You: " + message));
+        	messages.add(new String("You > " + message));
+        	//messages.add(new String(date.getHours() + ":" + date.getMinutes() + " You > " + message));
         } else {
-        	messages.add(new String(friend + ": " + message));
+        	messages.add(new String(friend + " > " + message));
         }
         you = !you;
     	adapter.notifyDataSetChanged();
@@ -157,7 +160,7 @@ public class DisplayMessageActivity extends Activity {
             }
         });
     	
-    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+    	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
             	

@@ -35,7 +35,8 @@ public class MainActivity extends Activity  {
 	public ArrayList<String> listItems;
     
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -83,7 +84,9 @@ public class MainActivity extends Activity  {
         	@Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         		String item = ((TextView)view).getText().toString();
-        		displayDeleteFriendConfirmation(item);
+        		if(!item.equals("No friends yet, why not add some!")) {
+        			displayDeleteFriendConfirmation(item);
+        		}
         		//deleteFriend(item);
         		return true;
             }
@@ -104,7 +107,7 @@ public class MainActivity extends Activity  {
             }
         });
     	
-    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+    	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
             	
@@ -211,7 +214,6 @@ public class MainActivity extends Activity  {
         {
         	this.listItems.remove(0);
         }
-    	
     	
         adapter.notifyDataSetChanged();
     }
