@@ -35,7 +35,8 @@ public class MainActivity extends Activity  {
 	public ArrayList<String> listItems;
     
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -106,7 +107,7 @@ public class MainActivity extends Activity  {
             }
         });
     	
-    	builder.setPositiveButton(R.string.delete_message_ok, new DialogInterface.OnClickListener() {
+    	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
             	

@@ -42,7 +42,7 @@ public class DBManager {
 		
 		values.put(DBHelper.COLUMN_NAME, u.getName());
 		
-		long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
+		//long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
 		
 	}	
 
