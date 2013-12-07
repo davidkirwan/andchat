@@ -4,12 +4,12 @@ package com.coderdojo.andchat;
 public class AndchatMessage {
 	
 	private long messageID;
-	private int idSender;
-	private int idReceiver;
+	private long idSender;
+	private long idReceiver;
 	private String message;
 	private AndchatDate date;
 	
-	public AndchatMessage(long messageID2, int senderID, int receiverID, String message2, AndchatDate date2) {
+	public AndchatMessage(long messageID2, long senderID, long receiverID, String message2, AndchatDate date2) {
 		messageID = messageID2;
 		idSender = senderID;
 		idReceiver = receiverID;
@@ -21,11 +21,11 @@ public class AndchatMessage {
 		return message;
 	}
 	
-	public int getIdOfSender() {
+	public long getIdOfSender() {
 		return idSender;
 	}
 	
-	public int getIdOfReceiver() {
+	public long getIdOfReceiver() {
 		return idReceiver;
 	}
 	
