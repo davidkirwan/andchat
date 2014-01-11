@@ -1,22 +1,28 @@
 package com.coderdojo.andchat;
 
 
-public class Profile {
+public class AndchatUserProfile {
 	
-	private int idOfUser;
+	private long idOfUser;
 	private String name;
 	private AndchatDate joinDate;
+	private String metaData;
 	private String bio;
 	
-	public Profile(int idOfUser2, String name2, AndchatDate joinDate2, String bio2) {
+	public AndchatUserProfile(long idOfUser2, String name2, AndchatDate joinDate2, String bio2) {
 		idOfUser = idOfUser2;
 		name = name2;
 		joinDate = joinDate2;
 		bio = bio2;
 	}
 	
-	public int getUserID() {
+	public long getUserID() {
 		return idOfUser;
+	}
+	
+	public void setUserName(String name)
+	{
+		this.name = name;
 	}
 	
 	public String getUserName() {
@@ -33,6 +39,14 @@ public class Profile {
 	
 	public void setBio(String string) {
 		bio = string;
+	}
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
 	}
 	
 }

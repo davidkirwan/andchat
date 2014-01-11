@@ -3,12 +3,17 @@ package com.coderdojo.andchat;
 public class AndchatUser {
 
 	private long id;
-	private String name;
-	private Profile profile;
+	private boolean online;
+	private AndchatUserProfile profile;
 	
-	public AndchatUser(long id2, String name2, Profile pro){
+	public AndchatUser(long id2, String name2){
 		id = id2;
-		name = name2;
+		this.profile.setUserName(name2);
+		this.setOnline(false);
+	}
+	
+	public AndchatUser(long id2, AndchatUserProfile pro){
+		id = id2;
 		profile = pro;
 	}
 
@@ -20,15 +25,19 @@ public class AndchatUser {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public AndchatUserProfile getProfile() {
+		return profile;
 	}
 	
-	public Profile getProfile() {
-		return profile;
+	public void setProfile(AndchatUserProfile profile){
+		this.profile = profile;
+	}
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 }

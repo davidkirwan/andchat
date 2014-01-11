@@ -40,7 +40,7 @@ public class DBManager {
 	public void updateUser(AndchatUser u){
 		ContentValues values = new ContentValues();
 		
-		values.put(DBHelper.COLUMN_NAME, u.getName());
+		values.put(DBHelper.COLUMN_NAME, u.getProfile().getUserName());
 		
 		//long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
 		
@@ -60,7 +60,7 @@ public class DBManager {
 	}
 
 	private AndchatUser cursorToUser(Cursor cursor) {
-		AndchatUser u = new AndchatUser(cursor.getInt(0), cursor.getString(1), null);
+		AndchatUser u = new AndchatUser(cursor.getInt(0), cursor.getString(1));
 		return u;
 	}
 
