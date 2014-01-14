@@ -9,24 +9,39 @@ public class AndchatUserProfile {
 	private String metaData;
 	private String bio;
 	
-	public AndchatUserProfile(long idOfUser2, String name2, AndchatDate joinDate2, String bio2) {
-		idOfUser = idOfUser2;
-		name = name2;
-		joinDate = joinDate2;
-		bio = bio2;
+	
+	public AndchatUserProfile(){
+		this.idOfUser = 0l;
+		this.name = "";
+		this.joinDate = new AndchatDate();
+		this.metaData = "";
+		this.bio = "";
+	}
+	
+	public AndchatUserProfile(long newIdOfUser, String newName, AndchatDate newJoinDate, String newBio) {
+		this.idOfUser = newIdOfUser;
+		this.name = newName;
+		this.joinDate = newJoinDate;
+		this.bio = newBio;
+		this.metaData = "";
 	}
 	
 	public long getUserID() {
 		return idOfUser;
 	}
 	
-	public void setUserName(String name)
+	public void setName(String name)
 	{
 		this.name = name;
 	}
 	
-	public String getUserName() {
+	public String getName() {
 		return name;
+	}
+	
+	public void setJoinDate(AndchatDate newJoinDate)
+	{
+		this.joinDate = newJoinDate;
 	}
 	
 	public AndchatDate getJoinDate() {
@@ -38,7 +53,7 @@ public class AndchatUserProfile {
 	}
 	
 	public void setBio(String string) {
-		bio = string;
+		this.bio = string;
 	}
 
 	public String getMetaData() {

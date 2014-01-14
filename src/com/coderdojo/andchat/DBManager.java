@@ -40,7 +40,7 @@ public class DBManager {
 	public void updateUser(AndchatUser u){
 		ContentValues values = new ContentValues();
 		
-		values.put(DBHelper.COLUMN_NAME, u.getProfile().getUserName());
+		values.put(DBHelper.COLUMN_NAME, u.getProfile().getName());
 		
 		//long insertId = database.update(dbHelper.TABLE_USERS, values, dbHelper.COLUMN_ID + " = " + u.getId(), null);
 		

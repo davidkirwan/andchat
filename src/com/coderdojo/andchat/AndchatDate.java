@@ -1,5 +1,8 @@
 package com.coderdojo.andchat;
 
+import android.text.format.Time;
+
+
 public class AndchatDate {
 
 	private String year;
@@ -10,17 +13,29 @@ public class AndchatDate {
 	private String second;
 	
 	
-	public AndchatDate(String second2, String minute2, String hour2, String year2, String month2, String day2) {
-		year = year2;
-		month = month2;
-		day = day2;
-		minute = minute2;
-		hour = hour2;
-		second = second2;
+	public AndchatDate() {
+		Time now = new Time();
+		now.setToNow();
+		
+		this.second = Integer.toString(now.second);
+		this.minute = Integer.toString(now.minute);
+		this.hour = Integer.toString(now.hour);
+		this.day = Integer.toString(now.weekDay);
+		this.month = Integer.toString(now.month);
+		this.year = Integer.toString(now.year);
 	}
 	
-	public String getDateTime() {
-		return getYear() + "/" + getMonth() + "/" + getDay() + " " + getHours() + ":" + getMinutes();
+	private Time getDateTime() {
+		Time theDate = new Time();
+		
+		theDate.set(Integer.parseInt(this.second), 
+							Integer.parseInt(this.minute), 
+							Integer.parseInt(this.hour), 
+							Integer.parseInt(this.day), 
+							Integer.parseInt(this.month), 
+							Integer.parseInt(this.year));
+		
+		return theDate;
 	}
 	
 	public String getYear() {
@@ -56,15 +71,7 @@ public class AndchatDate {
 		return day;
 	}
 	
-	public String getMinutes() {
-		return minute;
-	}
-	
-	public String getHours() {
-		return hour;
-	}
-	
-	public String getSeconds() {
+	public String getSecond() {
 		return second;
 	}
 }

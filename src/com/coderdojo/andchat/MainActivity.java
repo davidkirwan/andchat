@@ -35,7 +35,6 @@ public class MainActivity extends Activity  {
 	public ArrayList<String> listItems;
     
 
-    @SuppressWarnings("unchecked")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
