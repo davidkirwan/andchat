@@ -3,7 +3,7 @@ The Andchat Android application has been developed during the Waterford Coderdoj
 
 The Coderdojo is an open source, volunteer led, global movement of free coding clubs for young people. 
 
-For more informatino see: http://coderdojo.com
+For more information see: http://coderdojo.com
 
 
 
