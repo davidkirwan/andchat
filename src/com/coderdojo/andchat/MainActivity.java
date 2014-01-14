@@ -86,7 +86,6 @@ public class MainActivity extends Activity  {
         		if(!item.equals("No friends yet, why not add some!")) {
         			displayDeleteFriendConfirmation(item);
         		}
-        		//deleteFriend(item);
         		return true;
             }
         });
@@ -109,7 +108,6 @@ public class MainActivity extends Activity  {
     	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
-            	
         		addFriend(item);
             }
         });
@@ -166,12 +164,6 @@ public class MainActivity extends Activity  {
     public void openSettings()
     {
     	Toast.makeText(getBaseContext(), "Settings Clicked", Toast.LENGTH_LONG).show();
-    }
-    
-    
-    public void openSearch()
-    {
-    	Toast.makeText(getBaseContext(), "Search Clicked", Toast.LENGTH_LONG).show();
     }
     
     
@@ -241,7 +233,6 @@ public class MainActivity extends Activity  {
     	builder.setPositiveButton(R.string.delete_friend_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
-            	
         		deleteFriend(item);
             }
         });
