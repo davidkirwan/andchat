@@ -6,15 +6,22 @@ public class AndchatUser {
 	private boolean online;
 	private AndchatUserProfile profile;
 	
-	public AndchatUser(long newId, String newName){
+	public AndchatUser(long newId, String newName, String newMeta, String newBio, long joinDate){
 		id = newId;
-		this.profile.setName(newName);
+		//long newIdOfUser, String newName, AndchatDate newJoinDate, String newBio
+		this.setProfile( new AndchatUserProfile(newId, newName, joinDate, newBio) );
 		this.setOnline(false);
 	}
 	
 	public AndchatUser(long newId, AndchatUserProfile newProfile){
 		id = newId;
 		profile = newProfile;
+	}
+	
+	public AndchatUser(){
+		this.id = 0l;
+		this.setProfile( new AndchatUserProfile() );
+		this.setOnline(false);
 	}
 
 	public long getId() {

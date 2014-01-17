@@ -18,10 +18,10 @@ public class AndchatUserProfile {
 		this.bio = "";
 	}
 	
-	public AndchatUserProfile(long newIdOfUser, String newName, AndchatDate newJoinDate, String newBio) {
+	public AndchatUserProfile(long newIdOfUser, String newName, long newJoinDate, String newBio) {
 		this.idOfUser = newIdOfUser;
 		this.name = newName;
-		this.joinDate = newJoinDate;
+		this.joinDate = new AndchatDate(newJoinDate);
 		this.bio = newBio;
 		this.metaData = "";
 	}

@@ -1,6 +1,7 @@
 package com.coderdojo.andchat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 import android.app.Activity;
@@ -32,7 +33,8 @@ public class MainActivity extends Activity  {
 	public final static String LISTITEMS = "listItems";
 	
 	private DBManager datasource;	
-	public ArrayList<String> listItems;
+	private List<AndchatUser> userList;
+	private ArrayList<String> listItems;
     
 
 	@Override
@@ -40,18 +42,25 @@ public class MainActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        listItems = new ArrayList<String>();
-        
         datasource = new DBManager(this);
 		datasource.open();
+		
+		userList = datasource.getAllUsers();
+		Toast.makeText(getBaseContext(), "Userlist Size: " + userList.size(), Toast.LENGTH_LONG).show();
         
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String listItemsJson = sharedPref.getString(LISTITEMS, null);
+        //SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        //String listItemsJson = sharedPref.getString(LISTITEMS, null);
         
-        if(listItemsJson != null)
-        {
-        	listItems = new Gson().fromJson(listItemsJson, this.listItems.getClass());
-        }
+        //if(listItemsJson != null)
+        //{
+        //	listItems = new Gson().fromJson(listItemsJson, this.listItems.getClass());
+        //}
+		
+		listItems = new ArrayList<String>();
+		
+		for(int i = 0; i < userList.size(); i++){
+			listItems.add(userList.get(i).getProfile().getName());
+		}
 
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
@@ -121,13 +130,15 @@ public class MainActivity extends Activity  {
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
-
-        String listItemsJson = new Gson().toJson(this.listItems);
         
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(LISTITEMS, listItemsJson);
-        editor.commit();
+        datasource.close();
+        
+        //String listItemsJson = new Gson().toJson(this.listItems);
+        
+        //SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        //SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putString(LISTITEMS, listItemsJson);
+        //editor.commit();
         
         //Toast.makeText(getBaseContext(), "Pausing", Toast.LENGTH_LONG).show();
     }
@@ -135,6 +146,8 @@ public class MainActivity extends Activity  {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
+        
+        datasource.open();
         //Toast.makeText(getBaseContext(), "Resumed", Toast.LENGTH_LONG).show();
     }
 
@@ -200,6 +213,10 @@ public class MainActivity extends Activity  {
         listView.setAdapter(adapter);
         
     	listItems.add(new String(message));
+    	
+    	AndchatUser user = new AndchatUser();
+    	user.getProfile().setName(message);
+    	this.datasource.insertUser(message, "", "", 0l);
     	
     	if(listItems.get(0).equals("No friends yet, why not add some!"))
         {

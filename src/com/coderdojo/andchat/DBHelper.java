@@ -8,18 +8,25 @@ public class DBHelper extends SQLiteOpenHelper{
 
 	// Database constants
 	private static final String DATABASE_NAME = "andchat.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	// Users Table
 	public static final String TABLE_USERS = "usersTable";
 	public static final String COLUMN_ID = "c_id";
 	public static final String COLUMN_NAME = "c_name";
+	public static final String COLUMN_META = "c_meta";
+	public static final String COLUMN_BIO = "c_bio";
+	public static final String COLUMN_JOINDATE = "c_joindate";
+	
 	
 	// Create Users Table
 	private static final String CREATE_TABLE_USERS = "create table "
 			+ TABLE_USERS + "( "
 			+ COLUMN_ID + " integer primary key autoincrement, "
-			+ COLUMN_NAME + " text not null"
+			+ COLUMN_NAME + " text not null, "
+			+ COLUMN_META + " text not null, "
+			+ COLUMN_BIO + " text not null, "
+			+ COLUMN_JOINDATE + " text not null "
 			+ ");";
 	
 	

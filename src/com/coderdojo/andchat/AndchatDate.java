@@ -11,6 +11,7 @@ public class AndchatDate {
 	private String hour;
 	private String minute;
 	private String second;
+	private Long epoch;
 	
 	
 	public AndchatDate() {
@@ -23,7 +24,23 @@ public class AndchatDate {
 		this.day = Integer.toString(now.weekDay);
 		this.month = Integer.toString(now.month);
 		this.year = Integer.toString(now.year);
+		this.setEpoch(now.toMillis(true));
 	}
+	
+	public AndchatDate(long newEpoch) {
+		Time theTime = new Time();
+		theTime.set(newEpoch);
+		
+		this.second = Integer.toString(theTime.second);
+		this.minute = Integer.toString(theTime.minute);
+		this.hour = Integer.toString(theTime.hour);
+		this.day = Integer.toString(theTime.weekDay);
+		this.month = Integer.toString(theTime.month);
+		this.year = Integer.toString(theTime.year);
+		this.setEpoch(theTime.toMillis(true));
+	}
+	
+	
 	
 	private Time getDateTime() {
 		Time theDate = new Time();
@@ -34,7 +51,7 @@ public class AndchatDate {
 							Integer.parseInt(this.day), 
 							Integer.parseInt(this.month), 
 							Integer.parseInt(this.year));
-		
+
 		return theDate;
 	}
 	
@@ -73,5 +90,13 @@ public class AndchatDate {
 	
 	public String getSecond() {
 		return second;
+	}
+
+	public long getEpoch() {
+		return epoch;
+	}
+
+	public void setEpoch(long epoch) {
+		this.epoch = epoch;
 	}
 }
