@@ -8,7 +8,6 @@ public class AndchatUser {
 	
 	public AndchatUser(long newId, String newName, String newMeta, String newBio, long joinDate){
 		id = newId;
-		//long newIdOfUser, String newName, AndchatDate newJoinDate, String newBio
 		this.setProfile( new AndchatUserProfile(newId, newName, joinDate, newBio) );
 		this.setOnline(false);
 	}
