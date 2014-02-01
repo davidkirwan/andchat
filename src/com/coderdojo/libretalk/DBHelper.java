@@ -1,4 +1,4 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

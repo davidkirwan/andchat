@@ -1,9 +1,9 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import android.text.format.Time;
 
 
-public class AndchatDate {
+public class LibretalkDate {
 
 	private String year;
 	private String month;
@@ -14,7 +14,7 @@ public class AndchatDate {
 	private Long epoch;
 	
 	
-	public AndchatDate() {
+	public LibretalkDate() {
 		Time now = new Time();
 		now.setToNow();
 		
@@ -27,7 +27,7 @@ public class AndchatDate {
 		this.setEpoch(now.toMillis(true));
 	}
 	
-	public AndchatDate(long newEpoch) {
+	public LibretalkDate(long newEpoch) {
 		Time theTime = new Time();
 		theTime.set(newEpoch);
 		

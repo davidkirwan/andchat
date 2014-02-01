@@ -1,4 +1,4 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +35,12 @@ public class DBManager {
 		database.insert(DBHelper.TABLE_USERS, null, values);
 	}
 
-	public void deleteUser(AndchatUser u) {
+	public void deleteUser(LibretalkUser u) {
 		long id = u.getId();
 		database.delete(DBHelper.TABLE_USERS, DBHelper.COLUMN_ID + " = " + id, null);
 	}
 	
-	public void updateUser(AndchatUser u){
+	public void updateUser(LibretalkUser u){
 		ContentValues values = new ContentValues();
 		
 		values.put(DBHelper.COLUMN_NAME, u.getProfile().getName());
@@ -51,12 +51,12 @@ public class DBManager {
 		long insertId = database.update(DBHelper.TABLE_USERS, values, DBHelper.COLUMN_ID + " = " + u.getId(), null);
 	}	
 
-	public List<AndchatUser> getAllUsers() {
-		List<AndchatUser> users = new ArrayList<AndchatUser>();
+	public List<LibretalkUser> getAllUsers() {
+		List<LibretalkUser> users = new ArrayList<LibretalkUser>();
 		Cursor cursor = database.rawQuery("SELECT * FROM " + DBHelper.TABLE_USERS, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			AndchatUser r = cursorToUser(cursor);
+			LibretalkUser r = cursorToUser(cursor);
 			users.add(r);
 			cursor.moveToNext();
 		}
@@ -64,8 +64,8 @@ public class DBManager {
 		return users;
 	}
 
-	private AndchatUser cursorToUser(Cursor cursor) {
-		AndchatUser u = new AndchatUser(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getLong(4));
+	private LibretalkUser cursorToUser(Cursor cursor) {
+		LibretalkUser u = new LibretalkUser(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getLong(4));
 		return u;
 	}
 

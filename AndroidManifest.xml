@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.coderdojo.andchat"
+    package="com.coderdojo.libretalk"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.coderdojo.andchat.SplashActivity"
+            android:name="com.coderdojo.libretalk.SplashActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,16 +23,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.coderdojo.andchat.MainActivity"
+            android:name="com.coderdojo.libretalk.MainActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.coderdojo.andchat.MainActivity" />
         </activity>
         <activity
-            android:name="com.coderdojo.andchat.DisplayMessageActivity"
+            android:name="com.coderdojo.libretalk.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.coderdojo.andchat.MainActivity" >
+            android:parentActivityName="com.coderdojo.libretalk.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.coderdojo.andchat.MainActivity" />

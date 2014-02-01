@@ -1,27 +1,27 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 
-public class AndchatUserProfile {
+public class LibretalkUserProfile {
 	
 	private long idOfUser;
 	private String name;
-	private AndchatDate joinDate;
+	private LibretalkDate joinDate;
 	private String metaData;
 	private String bio;
 	
 	
-	public AndchatUserProfile(){
+	public LibretalkUserProfile(){
 		this.idOfUser = 0l;
 		this.name = "";
-		this.joinDate = new AndchatDate();
+		this.joinDate = new LibretalkDate();
 		this.metaData = "";
 		this.bio = "";
 	}
 	
-	public AndchatUserProfile(long newIdOfUser, String newName, long newJoinDate, String newBio) {
+	public LibretalkUserProfile(long newIdOfUser, String newName, long newJoinDate, String newBio) {
 		this.idOfUser = newIdOfUser;
 		this.name = newName;
-		this.joinDate = new AndchatDate(newJoinDate);
+		this.joinDate = new LibretalkDate(newJoinDate);
 		this.bio = newBio;
 		this.metaData = "";
 	}
@@ -39,12 +39,12 @@ public class AndchatUserProfile {
 		return name;
 	}
 	
-	public void setJoinDate(AndchatDate newJoinDate)
+	public void setJoinDate(LibretalkDate newJoinDate)
 	{
 		this.joinDate = newJoinDate;
 	}
 	
-	public AndchatDate getJoinDate() {
+	public LibretalkDate getJoinDate() {
 		return joinDate;
 	}
 	

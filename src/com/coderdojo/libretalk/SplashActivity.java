@@ -1,4 +1,4 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import android.app.Activity;
 import android.content.Intent;

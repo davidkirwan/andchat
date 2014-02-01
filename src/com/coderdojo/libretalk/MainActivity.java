@@ -1,4 +1,4 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class MainActivity extends Activity  {
 	public final static String LISTITEMS = "listItems";
 	
 	private DBManager datasource;	
-	private List<AndchatUser> userList;
+	private List<LibretalkUser> userList;
 	private ArrayList<String> listItems;
     
 
@@ -214,7 +214,7 @@ public class MainActivity extends Activity  {
         
     	listItems.add(new String(message));
     	
-    	AndchatUser user = new AndchatUser();
+    	LibretalkUser user = new LibretalkUser();
     	user.getProfile().setName(message);
     	this.datasource.insertUser(message, "", "", 0l);
     	

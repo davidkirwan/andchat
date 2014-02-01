@@ -1,15 +1,15 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 
-public class AndchatMessage {
+public class LibretalkMessage {
 	
 	private long messageID;
 	private long idSender;
 	private long idReceiver;
 	private String message;
-	private AndchatDate date;
+	private LibretalkDate date;
 	
-	public AndchatMessage(long messageID2, long senderID, long receiverID, String message2, AndchatDate date2) {
+	public LibretalkMessage(long messageID2, long senderID, long receiverID, String message2, LibretalkDate date2) {
 		messageID = messageID2;
 		idSender = senderID;
 		idReceiver = receiverID;
@@ -29,7 +29,7 @@ public class AndchatMessage {
 		return idReceiver;
 	}
 	
-	public AndchatDate getDate() {
+	public LibretalkDate getDate() {
 		return date;
 	}
 	

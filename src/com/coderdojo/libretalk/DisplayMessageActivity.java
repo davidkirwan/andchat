@@ -1,4 +1,4 @@
-package com.coderdojo.andchat;
+package com.coderdojo.libretalk;
 
 import java.util.ArrayList;
 import java.util.List;
