@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.coderdojo.libretalk.MainActivity"
+            android:name="com.coderdojo.libretalk.FriendActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,7 +32,7 @@
         <activity
             android:name="com.coderdojo.libretalk.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.coderdojo.libretalk.MainActivity" >
+            android:parentActivityName="com.coderdojo.libretalk.FriendActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.coderdojo.libretalk.MainActivity" />

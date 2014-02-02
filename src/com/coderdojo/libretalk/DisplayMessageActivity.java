@@ -42,7 +42,7 @@ public class DisplayMessageActivity extends Activity {
 		
 		// Get the message from the intent
 	    Intent intent = getIntent();
-	    friend = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+	    friend = intent.getStringExtra(FriendActivity.EXTRA_MESSAGE);
 	    
 	    TextView v = (TextView) findViewById(R.id.textView3);
 	    v.setText(friend);

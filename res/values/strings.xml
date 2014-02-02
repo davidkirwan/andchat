@@ -3,7 +3,14 @@
 
     <string name="app_name">Libretalk</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    
+    <string-array name="librechat_navigation_array">
+        <item>Friend List</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="addfriend">Add a Friend</string>
     <string name="send">Send</string>
     <string name="edit_name">Enter a name</string>
