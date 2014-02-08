@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.coderdojo.libretalk;
 
 import java.util.Locale;
@@ -72,8 +71,9 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private CharSequence mDrawerTitle;
+    private static CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private static CharSequence friendlist;
     private String[] mPlanetTitles;
 
     @Override
@@ -85,6 +85,7 @@ public class MainActivity extends Activity {
         mPlanetTitles = getResources().getStringArray(R.array.librechat_navigation_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        friendlist = getResources().getString(R.string.friendlist);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -107,7 +108,7 @@ public class MainActivity extends Activity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                getActionBar().setTitle(friendlist);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
@@ -173,9 +174,18 @@ public class MainActivity extends Activity {
     }
 
     private void selectItem(int position) {
+        // update the main content by replacing fragments
+        Fragment fragment = new BackgroundFragment();
+        Bundle args = new Bundle();
+        args.putInt(BackgroundFragment.ARG_BACKGROUND, position);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        setTitle(friendlist);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -204,4 +214,28 @@ public class MainActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * Fragment that appears in the "content_frame", shows a planet
+     */
+    public static class BackgroundFragment extends Fragment {
+    	public static final String ARG_BACKGROUND = "";
+
+        public BackgroundFragment() {
+            // Empty constructor required for fragment subclasses
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_background, container, false);
+            int i = getArguments().getInt(ARG_BACKGROUND);
+            String planet = getResources().getStringArray(R.array.librechat_navigation_array)[i];
+
+            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
+                            "drawable", getActivity().getPackageName());
+            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
+            //getActivity().setTitle(planet);
+            return rootView;
+        }
+    }
 }

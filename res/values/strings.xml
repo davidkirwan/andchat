@@ -3,9 +3,16 @@
 
     <string name="app_name">Libretalk</string>
     <string name="action_settings">Settings</string>
-    
+    <string name="friendlist">Friends List</string>
     <string-array name="librechat_navigation_array">
-        <item>Friend List</item>
+        <item>april</item>
+        <item>david</item>
+        <item>james</item>
+        <item>john</item>
+        <item>kate</item>
+        <item>liam</item>
+        <item>oscar</item>
+        <item>sarah</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
