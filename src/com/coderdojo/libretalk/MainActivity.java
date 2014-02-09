@@ -15,12 +15,16 @@
  */
 package com.coderdojo.libretalk;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -35,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -71,18 +76,34 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private static CharSequence mDrawerTitle;
-    private CharSequence mTitle;
+    private CharSequence appName, mTitle;
     private static CharSequence friendlist;
-    private String[] mPlanetTitles;
+    
+    private DBManager datasource;	
+	private List<LibretalkUser> userList;
+	private ArrayList<String> mFriendsListArray;
+	private ArrayList<String> mMessageListArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.librechat_navigation_array);
+        appName = mTitle = getTitle();
+        getActionBar().setTitle(appName);
+        
+        // Read the User data from the database
+        datasource = new DBManager(this);
+		datasource.open();
+		userList = datasource.getAllUsers();
+		
+		mFriendsListArray = new ArrayList<String>();
+		mMessageListArray = new ArrayList<String>();
+		
+		for(int i = 0; i < userList.size(); i++){
+			mFriendsListArray.add(userList.get(i).getProfile().getName());
+		}
+        
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         friendlist = getResources().getString(R.string.friendlist);
@@ -91,7 +112,7 @@ public class MainActivity extends Activity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+                R.layout.drawer_list_item, mFriendsListArray));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -113,13 +134,14 @@ public class MainActivity extends Activity {
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                getActionBar().setTitle(appName);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
+        	setTitle(friendlist);
             selectItem(0);
         }
     }
@@ -149,6 +171,15 @@ public class MainActivity extends Activity {
         }
         // Handle action buttons
         switch(item.getItemId()) {
+        case R.id.action_addfriend:
+        	Fragment fragment = new AddFriendFragment();
+            Bundle args = new Bundle();
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        	
+        	return true;
+        	
         case R.id.action_websearch:
             // create intent to perform web search for this planet
             Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -177,6 +208,7 @@ public class MainActivity extends Activity {
         // update the main content by replacing fragments
         Fragment fragment = new BackgroundFragment();
         Bundle args = new Bundle();
+        
         args.putInt(BackgroundFragment.ARG_BACKGROUND, position);
         fragment.setArguments(args);
 
@@ -185,7 +217,6 @@ public class MainActivity extends Activity {
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(friendlist);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -213,6 +244,126 @@ public class MainActivity extends Activity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+    
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+        datasource.close();
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        datasource.open();
+    }
+    
+    
+    public void addMessage(View view)
+    {
+    	EditText messageEditText = (EditText) findViewById(R.id.edit_message);
+    	String message = messageEditText.getText().toString();
+    	messageEditText.setText("");
+
+    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+    															mMessageListArray);
+    	ListView listView = (ListView) findViewById(R.id.message_list);
+    	listView.setAdapter(adapter);
+    	listView.setStackFromBottom(true);
+    	
+    	mMessageListArray.add(new String(message));
+    	adapter.notifyDataSetChanged();
+    }
+    
+    
+    public void addFriend(View view)
+    {
+    	EditText firstNameEditText = (EditText) findViewById(R.id.first_name);
+    	String firstName = firstNameEditText.getText().toString();
+    	firstNameEditText.setText("");
+    	
+    	// Ignore if the box is empty
+    	if(firstName.equals(""))
+    	{
+    		Toast.makeText(getBaseContext(), "You must enter a name first!", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+    	
+    	if(mFriendsListArray.contains(new String(firstName))) {
+    		Toast.makeText(getBaseContext(), "You already have this friend!", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+    	
+        
+        mFriendsListArray.add(new String(firstName));
+    	
+    	LibretalkUser user = new LibretalkUser();
+    	user.getProfile().setName(firstName);
+    	this.datasource.insertUser(firstName, "", "", 0l);
+    	
+    	if(mFriendsListArray.get(0).equals("No friends yet, why not add some!"))
+        {
+        	this.mFriendsListArray.remove(0);
+        }
+    	
+    	mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mFriendsListArray));
+    }
+    
+    public void addFriendConfirmation(final View item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.addfriend)
+        .setTitle(R.string.addfriend);
+    	
+    	builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+        		addFriend(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
+    }
+    
+    public void deleteFriend(String friend) {
+        mFriendsListArray.remove(friend);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mFriendsListArray));
+        Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
+    }
+    
+    public void displayDeleteFriendConfirmation(final String item){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	
+    	builder.setMessage(R.string.delete_dialog_title)
+        .setTitle(R.string.delete_dialog_title);
+    	
+    	builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+    	
+    	builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+        		deleteFriend(item);
+            }
+        });
+    	
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    	
+    }
+    
 
     /**
      * Fragment that appears in the "content_frame", shows a planet
@@ -229,12 +380,38 @@ public class MainActivity extends Activity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_background, container, false);
             int i = getArguments().getInt(ARG_BACKGROUND);
-            String planet = getResources().getStringArray(R.array.librechat_navigation_array)[i];
+            int imageResourceArraySize = getResources().getStringArray(R.array.librechat_background_image_array).length;
+            
+            if(i >= imageResourceArraySize)
+            {
+            	i = (int) (Math.random() * imageResourceArraySize);
+            }
+            
+            String background = getResources().getStringArray(R.array.librechat_background_image_array)[i];
 
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
+            int imageId = getResources().getIdentifier(background.toLowerCase(Locale.getDefault()),
                             "drawable", getActivity().getPackageName());
             ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
             //getActivity().setTitle(planet);
+            return rootView;
+        }
+    }
+    
+    
+    /**
+     * Fragment that appears in the "content_frame", shows a planet
+     */
+    public static class AddFriendFragment extends Fragment {
+    	
+        public AddFriendFragment() {
+            // Empty constructor required for fragment subclasses
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_add_friend, container, false);
+            
             return rootView;
         }
     }

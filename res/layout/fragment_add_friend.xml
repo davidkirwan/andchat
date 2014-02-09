@@ -19,8 +19,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   
-    tools:context=".FriendActivity" >
+    tools:context=".MainActivity" >
 
     <ImageView
         android:id="@+id/image"
@@ -32,36 +31,25 @@
         android:padding="32dp" 
         android:alpha="0.75"/>
 
-    <ListView
-        android:id="@+id/message_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_message"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textColor="#888" >
-
-    </ListView>
-
     <EditText
-        android:id="@+id/edit_message"
+        android:id="@+id/first_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/add_message_button"
-        android:layout_toLeftOf="@+id/add_message_button"
+        android:layout_alignBottom="@+id/add_friend_button"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/add_friend_button"
         android:ems="10"
-        android:hint="@string/edit_message"
+        android:hint="@string/edit_name"
         android:inputType="text" />
 
+
     <Button
-        android:id="@+id/add_message_button"
+        android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:onClick="addMessage"
-        android:text="@string/send" />
+        android:layout_alignParentTop="true"
+        android:onClick="addFriendConfirmation"
+        android:text="@string/addfriend" />
 
 </RelativeLayout>

@@ -19,4 +19,8 @@
           android:icon="@drawable/action_search"
           android:title="@string/action_websearch"
           android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_addfriend"
+          android:icon="@drawable/ic_action_add_person"
+          android:title="@string/addfriendbutton"
+          android:showAsAction="ifRoom|withText" />
 </menu>
