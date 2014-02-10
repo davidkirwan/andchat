@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper{
 
 	// Database constants
-	private static final String DATABASE_NAME = "andchat.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final String DATABASE_NAME = "libretalk.db";
+	private static final int DATABASE_VERSION = 1;
 	
 	// Users Table
 	public static final String TABLE_USERS = "usersTable";

@@ -29,14 +29,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.coderdojo.libretalk.MainActivity" />
         </activity>
-        <activity
-            android:name="com.coderdojo.libretalk.DisplayMessageActivity"
-            android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.coderdojo.libretalk.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.coderdojo.libretalk.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
