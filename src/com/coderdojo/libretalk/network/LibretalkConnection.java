@@ -109,6 +109,8 @@ public final class LibretalkConnection
                 {
                     final ConnectionFactory fac = new ConnectionFactory();
                     fac.setHost(host);
+                    fac.setPassword("guest");
+                    fac.setUsername("guest");
                     
                     connection = fac.newConnection();
                     channel = connection.createChannel();
