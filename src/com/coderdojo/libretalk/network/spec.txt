@@ -1,0 +1,23 @@
+Libretalk Network Specifications.
+--------------------------------
+
+Each user has their own unique Queue on the server - all queues are named according to the following
+scheme:
+
+    libretalk.user.<user ID>
+    
+Where <user ID> is a long integer. Possible values for this field include a unique and permanent ID 
+assigned at registration (would require a database/website setup), a Java UUID (not permanent, random)
+or a SHA-1 (or similar) hash of the client's username. I recommend this option, as it allows for unique
+values. Also clients would be able to identify their friends' queues from their usernames.
+
+Sent messages go to one of two exchanges on the server:
+
+    libretalk.chat.peers
+    libretalk.chat.global (not yet implemented!)
+    
+ libretalk.chat.peers is a "direct" exchange, which means it will route messages to a specific queue based
+ on a routing key. For routing keys, I've chosen to simply go with the user's queue name.
+ 
+ libretalk.chat.global is a "fanout" exhange, which means it will ignore routing keys and simply send
+ the message to all queues bound to the exchange.

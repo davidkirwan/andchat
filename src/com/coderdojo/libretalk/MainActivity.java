@@ -15,9 +15,16 @@
  */
 package com.coderdojo.libretalk;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.coderdojo.libretalk.network.ILibretalkMessageEventHandler;
+import com.coderdojo.libretalk.network.LibretalkConnection;
+import com.coderdojo.libretalk.network.LibretalkMessageReceiver;
+import com.coderdojo.libretalk.network.LibretalkMessageSender;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,6 +38,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,6 +91,12 @@ public class MainActivity extends Activity {
 	private List<LibretalkUser> userList;
 	private ArrayList<String> mFriendsListArray;
 	private ArrayList<String> mMessageListArray;
+	
+	//XXX NETWORKING CODE END
+	private LibretalkConnection connection;
+	private LibretalkMessageReceiver receiver;
+	private LibretalkMessageSender sender;
+	//XXX NETWORKING CODE END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +158,38 @@ public class MainActivity extends Activity {
         	setTitle(friendlist);
             selectItem(0);
         }
+        
+        //XXX NETWORKING CODE BEGIN
+        //[!] TODO: This is configured to use Android's localhost. Change the host value to whatever our server's address is.
+        this.connection = new LibretalkConnection("10.0.2.2", 0L);      
+        this.connection.connect();
+        
+        Log.d("libretalk::MainActivity", "Connected status is: " + this.connection.isConnected());
+        
+        final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
+        {
+
+            @Override
+            public void onMessageReceived(byte[] message)
+            {              
+                try
+                {
+                    printMsg(new String(message, "UTF-8")); // Always specify encoding!
+                }
+                catch (UnsupportedEncodingException ex)
+                {
+                    // Seriously? o-o
+                    ex.printStackTrace();
+                }
+            }
+            
+        };
+        
+        this.receiver = new LibretalkMessageReceiver(this.connection, eventHandler);
+        this.sender = new LibretalkMessageSender(this.connection);
+        
+        this.receiver.startConsuming();
+        //XXX NETWORKING CODE END
     }
 
     @Override
@@ -249,12 +295,29 @@ public class MainActivity extends Activity {
     public void onPause() {
         super.onPause();  // Always call the superclass method first
         datasource.close();
+        //XXX NETWORKING CODE BEGIN
+        
+        this.receiver.stopConsuming();
+        try
+        {
+            this.connection.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        //XXX NETWORKING CODE END
     }
     
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         datasource.open();
+        
+        //XXX NETWORKING CODE BEGIN
+        this.connection.connect();
+        this.receiver.startConsuming();
+        //XXX NETWORKING CODE END
     }
     
     
@@ -263,7 +326,7 @@ public class MainActivity extends Activity {
     	EditText messageEditText = (EditText) findViewById(R.id.edit_message);
     	String message = messageEditText.getText().toString();
     	messageEditText.setText("");
-
+    	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
     															mMessageListArray);
     	ListView listView = (ListView) findViewById(R.id.message_list);
@@ -272,8 +335,25 @@ public class MainActivity extends Activity {
     	
     	mMessageListArray.add(new String(message));
     	adapter.notifyDataSetChanged();
+    	
+    	//XXX NETWORKING CODE BEGIN
+    	this.sender.send(message.getBytes(), this.connection.getUserTag());
+    	//XXX NETWORKING CODE END
     }
     
+    //XXX NETWORKING CODE BEGIN
+    private final void printMsg(final String message)
+    {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                mMessageListArray);
+        ListView listView = (ListView) findViewById(R.id.message_list);
+        listView.setAdapter(adapter);
+        listView.setStackFromBottom(true);
+
+        mMessageListArray.add(message);
+        adapter.notifyDataSetChanged();
+    }
+    //XXX NETWORKING CODE END
     
     public void addFriend(View view)
     {
