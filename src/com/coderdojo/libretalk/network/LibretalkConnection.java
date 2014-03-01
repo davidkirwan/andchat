@@ -36,15 +36,16 @@ public final class LibretalkConnection
     public final void connect()
     {
         new ConnectToNetworkTask().execute();
-        
+        boolean retry = true;
         synchronized (lock)
         {
-            while (!connected)
+            while (!connected && retry)
             {
                 Log.d("libretalk::LibretalkConnection", "Waiting for connection...");
                 try
                 {
-                    lock.wait();
+                    lock.wait(5000);
+                    retry = false;
                 }
                 catch (InterruptedException ex)
                 {

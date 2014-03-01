@@ -161,7 +161,7 @@ public class MainActivity extends Activity {
         
         //XXX NETWORKING CODE BEGIN
         //[!] TODO: This is configured to use Android's localhost. Change the host value to whatever our server's address is.
-        this.connection = new LibretalkConnection("10.0.0.1", 0L);      
+        this.connection = new LibretalkConnection("10.37.51.120", 0L);      
         this.connection.connect();
         
         Log.d("libretalk::MainActivity", "Connected status is: " + this.connection.isConnected());
@@ -333,8 +333,8 @@ public class MainActivity extends Activity {
     	listView.setAdapter(adapter);
     	listView.setStackFromBottom(true);
     	
-    	mMessageListArray.add(new String(message));
-    	adapter.notifyDataSetChanged();
+    	//mMessageListArray.add(new String(message));
+    	//adapter.notifyDataSetChanged();
     	
     	//XXX NETWORKING CODE BEGIN
     	this.sender.send(message.getBytes(), this.connection.getUserTag());
