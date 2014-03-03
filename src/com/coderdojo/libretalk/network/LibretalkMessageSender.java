@@ -34,7 +34,7 @@ public final class LibretalkMessageSender
         {
             try
             {
-                connection.getChannel().basicPublish(LibretalkConnection.EXCHANGE_NAME, key, null, message);
+                connection.getChannel().basicPublish(LibretalkConnection.GLOBAL_EXCHANGE_NAME, "", null, message);
             }
             catch (IOException ex)
             {

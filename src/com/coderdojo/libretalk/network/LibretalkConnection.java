@@ -12,7 +12,8 @@ import com.rabbitmq.client.ConnectionFactory;
 public final class LibretalkConnection
 {
     public static final String EXCHANGE_NAME = "libretalk.chat.peers";
-    public static final String GLOBA_EXCHANGE_NAME = "libretalk.chat.global";
+    public static final String GLOBAL_EXCHANGE_NAME = "libretalk.chat.global";
+    public static final String ROUTING_KEY = "libretalk.user.";
     
     private final String host;
     private final String userTag;
@@ -24,12 +25,10 @@ public final class LibretalkConnection
     private Channel channel;
     
     
-     
-    
     public LibretalkConnection(final String host, final long uid)
     {
         this.host = host;
-        this.userTag = "libretalk.user." + Long.toString(uid);
+        this.userTag = ROUTING_KEY + Long.toString(uid);
     }
     
     
@@ -52,6 +51,7 @@ public final class LibretalkConnection
                     ex.printStackTrace();
                 }
             }
+            Log.d("libretalk::LibretalkConnection", "Connection timed out exiting...");
         }
     }
     
@@ -116,9 +116,17 @@ public final class LibretalkConnection
                     connection = fac.newConnection();
                     channel = connection.createChannel();
                     
-                    channel.exchangeDeclare(EXCHANGE_NAME, "direct");
+                    // Declare the libretalk.chat.global fanout exchange
+                    channel.exchangeDeclare(GLOBAL_EXCHANGE_NAME, "fanout");
+                    
+                    // Declare the libretalk.user.ID queue
                     channel.queueDeclare(userTag, false, true, true, null);
-                    channel.queueBind(userTag, EXCHANGE_NAME, userTag);
+                    
+                    // Bind the queue to the exchange
+                    channel.queueBind(userTag, GLOBAL_EXCHANGE_NAME, "");
+                    
+                    //channel.queueDeclare(userTag, false, true, true, null);
+                    //channel.queueBind(userTag, EXCHANGE_NAME, userTag);
                     
                     Log.d("libretalk::LibretalkConnection", "Set connected to true");
                     
