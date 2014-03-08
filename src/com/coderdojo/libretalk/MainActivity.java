@@ -25,6 +25,8 @@ import com.coderdojo.libretalk.network.ILibretalkMessageEventHandler;
 import com.coderdojo.libretalk.network.LibretalkConnection;
 import com.coderdojo.libretalk.network.LibretalkMessageReceiver;
 import com.coderdojo.libretalk.network.LibretalkMessageSender;
+import com.coderdojo.libretalk.network.LibretalkNetworkException;
+import com.rabbitmq.client.ShutdownSignalException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -161,10 +163,7 @@ public class MainActivity extends Activity {
         
         //XXX NETWORKING CODE BEGIN
         //[!] TODO: This is configured to use Android's localhost. Change the host value to whatever our server's address is.
-        this.connection = new LibretalkConnection("10.37.51.120", 0L);      
-        this.connection.connect();
-        
-        Log.d("libretalk::MainActivity", "Connected status is: " + this.connection.isConnected());
+        this.connection = new LibretalkConnection("10.0.2.2", 0L);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
@@ -183,12 +182,36 @@ public class MainActivity extends Activity {
                 }
             }
             
+            @Override
+            public void onDisconnect(final Exception ex)
+            {
+                showErrDialog("Disconnected! - " + ex.getClass().getSimpleName(),
+                              "A network error has occurred and you have been disconnected! " +
+                              "Please check you are connected to the internet.",
+                              ":("
+                             );
+            }
+            
         };
         
         this.receiver = new LibretalkMessageReceiver(this.connection, eventHandler);
         this.sender = new LibretalkMessageSender(this.connection);
         
-        this.receiver.startConsuming();
+        try
+        {
+            this.connection.connect();
+            this.receiver.startConsuming();
+        }
+        catch (LibretalkNetworkException ex)
+        {
+            this.showErrDialog("Connection failure - " + ex.getClass().getSimpleName(),
+                               "Unfortunately, an error has occurred and we were unable to connect you to" +
+                               "the Libretalk Network, please check you are connected to the internet.",
+                               ":(");
+            
+            ex.printStackTrace();
+            return;
+        }
         //XXX NETWORKING CODE END
     }
 
@@ -297,15 +320,25 @@ public class MainActivity extends Activity {
         datasource.close();
         //XXX NETWORKING CODE BEGIN
         
-        this.receiver.stopConsuming();
-        try
+        if (this.connection.getStatus() == LibretalkConnection.ConnectionStatus.CONNECTED)
         {
-            this.connection.close();
+            try
+            {
+                this.connection.close();
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+            catch (ShutdownSignalException sig)
+            {
+                Log.w("libretalk::LibretalkConnection", "Caught shutdownSignal while attempting to close Channel:");
+                Log.w("libretalk::LibretalkConnection", "\t[== " + sig.getMessage() + "==]");
+                Log.w("libretalk::LibretalkConnection", "\tHard Error : " + sig.isHardError());
+                Log.w("libretalk::LibretalkConnection", "\tReason     : " + sig.getReason());
+            }
         }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
+        
         //XXX NETWORKING CODE END
     }
     
@@ -315,8 +348,24 @@ public class MainActivity extends Activity {
         datasource.open();
         
         //XXX NETWORKING CODE BEGIN
-        this.connection.connect();
-        this.receiver.startConsuming();
+        
+        if (this.connection.getStatus() == LibretalkConnection.ConnectionStatus.NOT_CONNECTED)
+        {
+            try
+            {
+                this.connection.connect();
+                this.receiver.startConsuming();
+            }
+            catch (LibretalkNetworkException ex)
+            {
+                this.showErrDialog("Connection failure - " + ex.getClass().getSimpleName(),
+                        "Unfortunately, an error has occurred and we were unable to connect you to" +
+                        "the Libretalk Network, please check you are connected to the internet.",
+                        ":(");
+            }
+
+        }
+        
         //XXX NETWORKING CODE END
     }
     
@@ -352,6 +401,24 @@ public class MainActivity extends Activity {
 
         mMessageListArray.add(message);
         adapter.notifyDataSetChanged();
+    }
+    
+    private final void showErrDialog(final String title, final String msg, final String buttonText)
+    {
+        final AlertDialog.Builder bob = new AlertDialog.Builder(this);
+        
+        // TODO replace hardcoded strings with Android Resources.
+        bob.setTitle(title);
+        bob.setMessage(msg);
+        bob.setNeutralButton(buttonText, new DialogInterface.OnClickListener()
+        {             
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {                    
+                finish();                  
+            }
+        }).show();
+        
     }
     //XXX NETWORKING CODE END
     

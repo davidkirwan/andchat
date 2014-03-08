@@ -8,6 +8,7 @@ import android.util.Log;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.ShutdownSignalException;
 
 public final class LibretalkConnection
 {
@@ -19,7 +20,7 @@ public final class LibretalkConnection
     private final String userTag;
     private final Object lock = new Object();
     
-    private volatile boolean connected;
+    private volatile ConnectionStatus status = ConnectionStatus.NOT_CONNECTED;
     
     private Connection connection;
     private Channel channel;
@@ -32,26 +33,29 @@ public final class LibretalkConnection
     }
     
     
-    public final void connect()
+    public final void connect() throws LibretalkNetworkException
     {
         new ConnectToNetworkTask().execute();
-        boolean retry = true;
+
         synchronized (lock)
         {
-            while (!connected && retry)
+            while (this.status != ConnectionStatus.CONNECTED)
             {
-                Log.d("libretalk::LibretalkConnection", "Waiting for connection...");
+               
                 try
                 {
-                    lock.wait(5000);
-                    retry = false;
+                    lock.wait(5000L);
+                    
+                    if (this.status == ConnectionStatus.CONNECTION_FAILED)
+                    {
+                        throw new LibretalkNetworkException("Failed to connect to network! CSTATUS FAILED");
+                    }
                 }
                 catch (InterruptedException ex)
                 {
-                    ex.printStackTrace();
+                    throw new LibretalkNetworkException("Failed to connect to network! Connector thread interrupted!", ex);
                 }
             }
-            Log.d("libretalk::LibretalkConnection", "Connection timed out exiting...");
         }
     }
     
@@ -62,19 +66,18 @@ public final class LibretalkConnection
     }
     
     
-    public final boolean isConnected()
-    {
-        return connected;
-    }
-    
-    
     public final String getUserTag()
     {
         return userTag;
     }
     
+    public final ConnectionStatus getStatus()
+    {
+        return status;
+    }
     
-    public final void close() throws IOException
+    
+    public final void close() throws IOException, ShutdownSignalException
     {        
         if (this.channel != null)
         {
@@ -88,10 +91,16 @@ public final class LibretalkConnection
             Log.d("libretalk::LibretalkConnection", "Closed LibretalkConnection#connection");
         }
         
+        this.status = ConnectionStatus.NOT_CONNECTED;        
     }
     
     
-    
+    public enum ConnectionStatus
+    {
+        NOT_CONNECTED,
+        CONNECTED,
+        CONNECTION_FAILED
+    }
     
     private final class ConnectToNetworkTask extends AsyncTask<Void, Void, Void>
     {   
@@ -112,6 +121,7 @@ public final class LibretalkConnection
                     fac.setHost(host);
                     fac.setPassword("guest");
                     fac.setUsername("guest");
+                    fac.setConnectionTimeout(25000);
                     
                     connection = fac.newConnection();
                     channel = connection.createChannel();
@@ -125,14 +135,13 @@ public final class LibretalkConnection
                     // Bind the queue to the exchange
                     channel.queueBind(userTag, GLOBAL_EXCHANGE_NAME, "");
                     
-                    //channel.queueDeclare(userTag, false, true, true, null);
-                    //channel.queueBind(userTag, EXCHANGE_NAME, userTag);
                     
                     Log.d("libretalk::LibretalkConnection", "Set connected to true");
                     
                     synchronized (lock)
                     {
-                        connected = true;
+                        status = ConnectionStatus.CONNECTED;
+                        
                         lock.notifyAll();
                     }
                 }
@@ -140,6 +149,8 @@ public final class LibretalkConnection
                 {
                     Log.e("libretalk::LibretalkConnection", "[==== Failed to connect to libretalkNetwork! ====]");
                     ex.printStackTrace();
+                    
+                    status = ConnectionStatus.CONNECTION_FAILED;
                     
                     this.cancel(true);
                 }             
