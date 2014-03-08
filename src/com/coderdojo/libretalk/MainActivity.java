@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
         Random randomGenerator = new Random();
         long tempuserhash = randomGenerator.nextLong();
         
-        this.connection = new LibretalkConnection("54.247.106.149", tempuserhash);
+        this.connection = new LibretalkConnection("10.0.0.1", tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
