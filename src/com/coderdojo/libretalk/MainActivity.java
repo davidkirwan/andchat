@@ -391,7 +391,10 @@ public class MainActivity extends Activity {
     	//adapter.notifyDataSetChanged();
     	
     	//XXX NETWORKING CODE BEGIN
-    	this.sender.send(message.getBytes(), this.connection.getUserTag());
+    	if (!message.isEmpty())
+    	{
+    	    this.sender.send(message.getBytes(), this.connection.getUserTag());
+    	}
     	//XXX NETWORKING CODE END
     }
     
