@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
         Random randomGenerator = new Random();
         long tempuserhash = randomGenerator.nextLong();
         
-        this.connection = new LibretalkConnection("54.247.106.149", tempuserhash);
+        this.connection = new LibretalkConnection("10.0.2.2", tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
@@ -391,7 +391,10 @@ public class MainActivity extends Activity {
     	//adapter.notifyDataSetChanged();
     	
     	//XXX NETWORKING CODE BEGIN
-    	this.sender.send(message.getBytes(), this.connection.getUserTag());
+    	if (!message.isEmpty())
+    	{
+    	    this.sender.send(message.getBytes(), this.connection.getUserTag());
+    	}
     	//XXX NETWORKING CODE END
     }
     
