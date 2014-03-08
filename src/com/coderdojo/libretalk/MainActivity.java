@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import com.coderdojo.libretalk.network.ILibretalkMessageEventHandler;
 import com.coderdojo.libretalk.network.LibretalkConnection;
@@ -163,7 +164,11 @@ public class MainActivity extends Activity {
         
         //XXX NETWORKING CODE BEGIN
         //[!] TODO: This is configured to use Android's localhost. Change the host value to whatever our server's address is.
-        this.connection = new LibretalkConnection("10.0.2.2", 0L);
+        
+        Random randomGenerator = new Random();
+        long tempuserhash = randomGenerator.nextLong();
+        
+        this.connection = new LibretalkConnection("54.247.106.149", tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
