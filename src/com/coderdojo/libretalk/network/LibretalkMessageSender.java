@@ -13,10 +13,12 @@ public final class LibretalkMessageSender
         this.connection = connection;
     }
     
+    
     public final void send(final byte[] message, final String key)
     {
        new SendMessageTask(message, key).execute(); 
     }
+    
     
     private final class SendMessageTask extends AsyncTask<Void, Void, Void>
     {
@@ -41,11 +43,6 @@ public final class LibretalkMessageSender
                 ex.printStackTrace();
             }
             return null;
-        }
-        
-        
-    }
-    
-    
-    
+        }       
+    }  
 }
