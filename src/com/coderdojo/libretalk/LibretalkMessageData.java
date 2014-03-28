@@ -78,4 +78,10 @@ public final class LibretalkMessageData implements Serializable
 		
 	}
 	
+	@Override
+	public final String toString()
+	{
+		return "LibretalkMessage#" + userTag + "->{" + data + "}_COLOR(" + color + ")";
+	}
+	
 }
