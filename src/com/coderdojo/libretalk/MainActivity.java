@@ -99,6 +99,8 @@ public class MainActivity extends Activity {
 	private LibretalkConnection connection;
 	private LibretalkMessageReceiver receiver;
 	private LibretalkMessageSender sender;
+	
+	private static final String DEBUG_SENDER_TAG = "liam_power";
 	//XXX NETWORKING CODE END
 
     @Override
@@ -174,16 +176,20 @@ public class MainActivity extends Activity {
         {
 
             @Override
-            public void onMessageReceived(byte[] message)
+            public void onMessageReceived(final LibretalkMessageData message)
             {              
                 try
                 {
-                    printMsg(new String(message, "UTF-8")); // Always specify encoding!
+                	
+                    printMsg(message.getSenderTag() + ": " + message.getData());
                 }
-                catch (UnsupportedEncodingException ex)
+                catch (Exception ex)
                 {
-                    // Seriously? o-o
-                    ex.printStackTrace();
+                	showErrDialog("Fatal Error! - " + ex.getClass().getSimpleName(),
+                			      "An error has occurred while attempting to proccess a message from " + message.getSenderTag() +
+                			      ".\n " + ex.getMessage(),
+                			      ":'("
+                			     );
                 }
             }
             
@@ -393,7 +399,21 @@ public class MainActivity extends Activity {
     	//XXX NETWORKING CODE BEGIN
     	if (!message.isEmpty())
     	{
-    	    this.sender.send(message.getBytes(), this.connection.getUserTag());
+    		final LibretalkMessageData data = new LibretalkMessageData(DEBUG_SENDER_TAG, message);
+    	    try
+    	    {
+				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
+			}
+    	    catch (IOException e)
+    	    {
+				showErrDialog("Fatal Error - " + e.getClass().getSimpleName(),
+						      "A critical error has occurred whilst serializing message data (sending a message)" +
+				              e.getMessage(),
+				              ":'("
+				              );
+
+				e.printStackTrace();
+			}
     	}
     	//XXX NETWORKING CODE END
     }

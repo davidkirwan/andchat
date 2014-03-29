@@ -19,14 +19,14 @@ public final class LibretalkMessageData implements Serializable
 	
 	
 	private final String data;
-	private final String userTag;
+	private final String senderTag;
 	private final int color;
 	
-	public LibretalkMessageData(final String username, final String message)
+	public LibretalkMessageData(final String senderTag, final String message)
 	{
-		this.userTag = username;
+		this.senderTag = senderTag;
 		this.data = message;
-		this.color = getColorFromString(username);
+		this.color = getColorFromString(senderTag);
 	}
 	
 	private static final int getColorFromString(final String s)
@@ -41,9 +41,9 @@ public final class LibretalkMessageData implements Serializable
 	}
 	
 
-	public String getUserTag()
+	public String getSenderTag()
 	{
-		return userTag;
+		return senderTag;
 	}
 
 	public int getColor()
@@ -81,7 +81,7 @@ public final class LibretalkMessageData implements Serializable
 	@Override
 	public final String toString()
 	{
-		return "LibretalkMessage#" + userTag + "->{" + data + "}_COLOR(" + color + ")";
+		return "LibretalkMessage#" + senderTag + "->{" + data + "}_COLOR(" + color + ")";
 	}
 	
 }

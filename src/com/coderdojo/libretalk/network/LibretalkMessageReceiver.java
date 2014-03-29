@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.os.Handler;
 import android.util.Log;
 
+import com.coderdojo.libretalk.LibretalkMessageData;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -89,9 +90,9 @@ public final class LibretalkMessageReceiver
      */
     private final class PostMessageTask implements Runnable
     {
-        private final byte[] msg;
+        private final LibretalkMessageData msg;
         
-        protected PostMessageTask(final byte[] msg)
+        protected PostMessageTask(final LibretalkMessageData msg)
         {
             this.msg = msg;
         }
@@ -138,10 +139,18 @@ public final class LibretalkMessageReceiver
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties props, final byte[] body) 
                 throws IOException
         {
-            handler.post(new PostMessageTask(body));
+        	//TODO Requires cleanup
+            try
+            {
+				handler.post(new PostMessageTask(LibretalkMessageData.deserialize(body)));
+			}
+            catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+            
             connection.getChannel().basicAck(envelope.getDeliveryTag(), false);
             
-            Log.d("libretalk::LibretalkMessageReceiver::MessageConsumer", "Received :" + new String(body));
+            Log.d("libretalk::LibretalkMessageReceiver::MessageConsumer", "Received Msg");
         }
         
         
