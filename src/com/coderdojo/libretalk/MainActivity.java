@@ -16,7 +16,6 @@
 package com.coderdojo.libretalk;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +40,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,13 +94,16 @@ public class MainActivity extends Activity {
     
     private DBManager datasource;	
 	private List<LibretalkUser> userList;
-	private ArrayList<String> mFriendsListArray;
-	private ArrayList<String> mMessageListArray;
+	private ArrayList<SpannableString> mFriendsListArray;
+	private ArrayList<SpannableString> mMessageListArray;
 	
 	//XXX NETWORKING CODE END
 	private LibretalkConnection connection;
 	private LibretalkMessageReceiver receiver;
 	private LibretalkMessageSender sender;
+	
+	private static final String DEFAULT_SENDER_TAG = "Anon";
+	private String nick = DEFAULT_SENDER_TAG;
 	//XXX NETWORKING CODE END
 
     @Override
@@ -114,11 +119,11 @@ public class MainActivity extends Activity {
 		datasource.open();
 		userList = datasource.getAllUsers();
 		
-		mFriendsListArray = new ArrayList<String>();
-		mMessageListArray = new ArrayList<String>();
+		mFriendsListArray = new ArrayList<SpannableString>();
+		mMessageListArray = new ArrayList<SpannableString>();
 		
 		for(int i = 0; i < userList.size(); i++){
-			mFriendsListArray.add(userList.get(i).getProfile().getName());
+			mFriendsListArray.add(new SpannableString(userList.get(i).getProfile().getName()));
 		}
         
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,7 +133,7 @@ public class MainActivity extends Activity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+        mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -174,16 +179,21 @@ public class MainActivity extends Activity {
         {
 
             @Override
-            public void onMessageReceived(byte[] message)
+            public void onMessageReceived(final LibretalkMessageData message)
             {              
                 try
                 {
-                    printMsg(new String(message, "UTF-8")); // Always specify encoding!
+                	
+                    //printMsg(message.getSenderTag() + ": " + message.getData());
+                	printMsg(message);
                 }
-                catch (UnsupportedEncodingException ex)
+                catch (Exception ex)
                 {
-                    // Seriously? o-o
-                    ex.printStackTrace();
+                	showErrDialog("Fatal Error! - " + ex.getClass().getSimpleName(),
+                			      "An error has occurred while attempting to proccess a message from " + message.getSenderTag() +
+                			      ".\n " + ex.getMessage(),
+                			      ":'("
+                			     );
                 }
             }
             
@@ -381,7 +391,7 @@ public class MainActivity extends Activity {
     	String message = messageEditText.getText().toString();
     	messageEditText.setText("");
     	
-    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+    	ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
     															mMessageListArray);
     	ListView listView = (ListView) findViewById(R.id.message_list);
     	listView.setAdapter(adapter);
@@ -393,7 +403,28 @@ public class MainActivity extends Activity {
     	//XXX NETWORKING CODE BEGIN
     	if (!message.isEmpty())
     	{
-    	    this.sender.send(message.getBytes(), this.connection.getUserTag());
+    		if (message.startsWith(".nick"))
+    		{
+    			this.nick = message.substring(5);
+    			printMsg("\t >> Changed your nickname to " + this.nick);
+    			return;
+    		}
+    		
+    		final LibretalkMessageData data = new LibretalkMessageData(this.nick, message);
+    	    try
+    	    {
+				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
+			}
+    	    catch (IOException e)
+    	    {
+				showErrDialog("Fatal Error - " + e.getClass().getSimpleName(),
+						      "A critical error has occurred whilst serializing message data (sending a message)" +
+				              e.getMessage(),
+				              ":'("
+				              );
+
+				e.printStackTrace();
+			}
     	}
     	//XXX NETWORKING CODE END
     }
@@ -401,13 +432,34 @@ public class MainActivity extends Activity {
     //XXX NETWORKING CODE BEGIN
     private final void printMsg(final String message)
     {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+        ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
                 mMessageListArray);
         ListView listView = (ListView) findViewById(R.id.message_list);
         listView.setAdapter(adapter);
         listView.setStackFromBottom(true);
-
-        mMessageListArray.add(message);
+        
+        mMessageListArray.add(new SpannableString(message));
+        adapter.notifyDataSetChanged();
+    }
+    
+    private final void printMsg(final LibretalkMessageData message)
+    {
+        ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
+                mMessageListArray);
+        ListView listView = (ListView) findViewById(R.id.message_list);
+        listView.setAdapter(adapter);
+        listView.setStackFromBottom(true);
+        
+        final String output = message.getSenderTag() + ": " + message.getData();
+        SpannableString formattedText = new SpannableString(output);
+        formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
+        		              output.indexOf(message.getSenderTag()),
+        		              output.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+        		              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        
+        Log.d("mainactivity", "COLOR IS" + LibretalkMessageData.getColorFromString(message.getSenderTag()));
+        mMessageListArray.add(formattedText);
         adapter.notifyDataSetChanged();
     }
     
@@ -449,7 +501,7 @@ public class MainActivity extends Activity {
     	}
     	
         
-        mFriendsListArray.add(new String(firstName));
+        mFriendsListArray.add(new SpannableString(firstName));
     	
     	LibretalkUser user = new LibretalkUser();
     	user.getProfile().setName(firstName);
@@ -460,7 +512,7 @@ public class MainActivity extends Activity {
         	this.mFriendsListArray.remove(0);
         }
     	
-    	mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+    	mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
     }
     
@@ -490,7 +542,7 @@ public class MainActivity extends Activity {
     
     public void deleteFriend(String friend) {
         mFriendsListArray.remove(friend);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+        mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
         Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
     }
