@@ -16,7 +16,6 @@
 package com.coderdojo.libretalk;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -37,15 +36,12 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.SpannedString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,7 +102,8 @@ public class MainActivity extends Activity {
 	private LibretalkMessageReceiver receiver;
 	private LibretalkMessageSender sender;
 	
-	private static final String DEBUG_SENDER_TAG = "liam_power";
+	private static final String DEFAULT_SENDER_TAG = "Anon";
+	private String nick = DEFAULT_SENDER_TAG;
 	//XXX NETWORKING CODE END
 
     @Override
@@ -406,7 +403,14 @@ public class MainActivity extends Activity {
     	//XXX NETWORKING CODE BEGIN
     	if (!message.isEmpty())
     	{
-    		final LibretalkMessageData data = new LibretalkMessageData(DEBUG_SENDER_TAG, message);
+    		if (message.startsWith(".nick"))
+    		{
+    			this.nick = message.substring(5);
+    			printMsg("\t >> Changed your nickname to " + this.nick);
+    			return;
+    		}
+    		
+    		final LibretalkMessageData data = new LibretalkMessageData(this.nick, message);
     	    try
     	    {
 				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
@@ -448,12 +452,13 @@ public class MainActivity extends Activity {
         
         final String output = message.getSenderTag() + ": " + message.getData();
         SpannableString formattedText = new SpannableString(output);
-        formattedText.setSpan(new ForegroundColorSpan(message.getColor()),
+        formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
         		              output.indexOf(message.getSenderTag()),
         		              output.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
         		              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         
         
+        Log.d("mainactivity", "COLOR IS" + LibretalkMessageData.getColorFromString(message.getSenderTag()));
         mMessageListArray.add(formattedText);
         adapter.notifyDataSetChanged();
     }
