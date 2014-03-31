@@ -7,8 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import android.graphics.Color;
+import android.util.Log;
 
 public final class LibretalkMessageData implements Serializable
 {
@@ -28,14 +32,32 @@ public final class LibretalkMessageData implements Serializable
 	}
 	
 	public static final int getColorFromString(final String s)
-	{
-		final int c = s.hashCode();
+	{		
+		String str = s.substring(1, 2);
+		Log.d("libretalk::LibretalkMessageData", "Original String: " + s);
+		Log.d("libretalk::LibretalkMessageData", "Substring: " + str);
 		
-		final int r = (c << 16) & 0xFF; 
-		final int g = (c << 8)  & 0xFF;
-		final int b = c & 0xFF;
+		String[] colours = {"#9EB08E", "#9E8EB0", "#AB2E2E", "#C0FF00", "#FFACAC", 
+		                 "#699FF0", "#69F0E7", "#FCD04D", "#FCED4D", "#217989", "#892121",
+		                 "#FF0000", "#2600FF", "#00FF26", "#FCFF00", "#FFF886", "#D5720F", 
+		                 "#B5DC8E", "#8EDCD3", "#4A6CC3", "#CE13DF", "#2B6F9D", "#75E5DE",
+		                 "#51C121", "#EC5A32", "#5C4BDC"};
 		
-		return Color.rgb(b, g, r);
+		char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+		
+		int index = 0;
+		
+		for(int i = 0; i < alphabet.length; i++){
+			if(str.equalsIgnoreCase(Character.toString(alphabet[i]))){
+				Log.d("libretalk::LibretalkMessageData", "Match found at index: " + index);
+				index = i;
+			}
+		}
+		
+		Log.d("libretalk::LibretalkMessageData", "Colour Index: " + index);
+		Log.d("libretalk::LibretalkMessageData", "Colour: " + colours[index]);
+		
+		return Color.parseColor(colours[index]);
 	}
 	
 
