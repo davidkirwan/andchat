@@ -15,9 +15,18 @@
  */
 package com.coderdojo.libretalk;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+
+import com.coderdojo.libretalk.network.ILibretalkMessageEventHandler;
+import com.coderdojo.libretalk.network.LibretalkConnection;
+import com.coderdojo.libretalk.network.LibretalkMessageReceiver;
+import com.coderdojo.libretalk.network.LibretalkMessageSender;
+import com.coderdojo.libretalk.network.LibretalkNetworkException;
+import com.rabbitmq.client.ShutdownSignalException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,6 +40,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,8 +94,17 @@ public class MainActivity extends Activity {
     
     private DBManager datasource;	
 	private List<LibretalkUser> userList;
-	private ArrayList<String> mFriendsListArray;
-	private ArrayList<String> mMessageListArray;
+	private ArrayList<SpannableString> mFriendsListArray;
+	private ArrayList<SpannableString> mMessageListArray;
+	
+	//XXX NETWORKING CODE END
+	private LibretalkConnection connection;
+	private LibretalkMessageReceiver receiver;
+	private LibretalkMessageSender sender;
+	
+	private static final String DEFAULT_SENDER_TAG = "Anon";
+	private String nick = DEFAULT_SENDER_TAG;
+	//XXX NETWORKING CODE END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +119,11 @@ public class MainActivity extends Activity {
 		datasource.open();
 		userList = datasource.getAllUsers();
 		
-		mFriendsListArray = new ArrayList<String>();
-		mMessageListArray = new ArrayList<String>();
+		mFriendsListArray = new ArrayList<SpannableString>();
+		mMessageListArray = new ArrayList<SpannableString>();
 		
 		for(int i = 0; i < userList.size(); i++){
-			mFriendsListArray.add(userList.get(i).getProfile().getName());
+			mFriendsListArray.add(new SpannableString(userList.get(i).getProfile().getName()));
 		}
         
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,7 +133,7 @@ public class MainActivity extends Activity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+        mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -144,6 +166,68 @@ public class MainActivity extends Activity {
         	setTitle(friendlist);
             selectItem(0);
         }
+        
+        //XXX NETWORKING CODE BEGIN
+        //[!] TODO: This is configured to use Android's localhost. Change the host value to whatever our server's address is.
+        
+        Random randomGenerator = new Random();
+        long tempuserhash = randomGenerator.nextLong();
+        
+        this.connection = new LibretalkConnection("10.0.0.1", tempuserhash);
+        
+        final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
+        {
+
+            @Override
+            public void onMessageReceived(final LibretalkMessageData message)
+            {              
+                try
+                {
+                	
+                    //printMsg(message.getSenderTag() + ": " + message.getData());
+                	printMsg(message);
+                }
+                catch (Exception ex)
+                {
+                	showErrDialog("Fatal Error! - " + ex.getClass().getSimpleName(),
+                			      "An error has occurred while attempting to proccess a message from " + message.getSenderTag() +
+                			      ".\n " + ex.getMessage(),
+                			      ":'("
+                			     );
+                }
+            }
+            
+            @Override
+            public void onDisconnect(final Exception ex)
+            {
+                showErrDialog("Disconnected! - " + ex.getClass().getSimpleName(),
+                              "A network error has occurred and you have been disconnected! " +
+                              "Please check you are connected to the internet.",
+                              ":("
+                             );
+            }
+            
+        };
+        
+        this.receiver = new LibretalkMessageReceiver(this.connection, eventHandler);
+        this.sender = new LibretalkMessageSender(this.connection);
+        
+        try
+        {
+            this.connection.connect();
+            this.receiver.startConsuming();
+        }
+        catch (LibretalkNetworkException ex)
+        {
+            this.showErrDialog("Connection failure - " + ex.getClass().getSimpleName(),
+                               "Unfortunately, an error has occurred and we were unable to connect you to" +
+                               "the Libretalk Network, please check you are connected to the internet.",
+                               ":(");
+            
+            ex.printStackTrace();
+            return;
+        }
+        //XXX NETWORKING CODE END
     }
 
     @Override
@@ -249,12 +333,55 @@ public class MainActivity extends Activity {
     public void onPause() {
         super.onPause();  // Always call the superclass method first
         datasource.close();
+        //XXX NETWORKING CODE BEGIN
+        
+        if (this.connection.getStatus() == LibretalkConnection.ConnectionStatus.CONNECTED)
+        {
+            try
+            {
+                this.connection.close();
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+            catch (ShutdownSignalException sig)
+            {
+                Log.w("libretalk::LibretalkConnection", "Caught shutdownSignal while attempting to close Channel:");
+                Log.w("libretalk::LibretalkConnection", "\t[== " + sig.getMessage() + "==]");
+                Log.w("libretalk::LibretalkConnection", "\tHard Error : " + sig.isHardError());
+                Log.w("libretalk::LibretalkConnection", "\tReason     : " + sig.getReason());
+            }
+        }
+        
+        //XXX NETWORKING CODE END
     }
     
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         datasource.open();
+        
+        //XXX NETWORKING CODE BEGIN
+        
+        if (this.connection.getStatus() == LibretalkConnection.ConnectionStatus.NOT_CONNECTED)
+        {
+            try
+            {
+                this.connection.connect();
+                this.receiver.startConsuming();
+            }
+            catch (LibretalkNetworkException ex)
+            {
+                this.showErrDialog("Connection failure - " + ex.getClass().getSimpleName(),
+                        "Unfortunately, an error has occurred and we were unable to connect you to" +
+                        "the Libretalk Network, please check you are connected to the internet.",
+                        ":(");
+            }
+
+        }
+        
+        //XXX NETWORKING CODE END
     }
     
     
@@ -263,17 +390,97 @@ public class MainActivity extends Activity {
     	EditText messageEditText = (EditText) findViewById(R.id.edit_message);
     	String message = messageEditText.getText().toString();
     	messageEditText.setText("");
-
-    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+    	
+    	ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
     															mMessageListArray);
     	ListView listView = (ListView) findViewById(R.id.message_list);
     	listView.setAdapter(adapter);
     	listView.setStackFromBottom(true);
     	
-    	mMessageListArray.add(new String(message));
-    	adapter.notifyDataSetChanged();
+    	//mMessageListArray.add(new String(message));
+    	//adapter.notifyDataSetChanged();
+    	
+    	//XXX NETWORKING CODE BEGIN
+    	if (!message.isEmpty())
+    	{
+    		if (message.startsWith(".nick"))
+    		{
+    			this.nick = message.substring(5);
+    			printMsg("\t >> Changed your nickname to " + this.nick);
+    			return;
+    		}
+    		
+    		final LibretalkMessageData data = new LibretalkMessageData(this.nick, message);
+    	    try
+    	    {
+				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
+			}
+    	    catch (IOException e)
+    	    {
+				showErrDialog("Fatal Error - " + e.getClass().getSimpleName(),
+						      "A critical error has occurred whilst serializing message data (sending a message)" +
+				              e.getMessage(),
+				              ":'("
+				              );
+
+				e.printStackTrace();
+			}
+    	}
+    	//XXX NETWORKING CODE END
     }
     
+    //XXX NETWORKING CODE BEGIN
+    private final void printMsg(final String message)
+    {
+        ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
+                mMessageListArray);
+        ListView listView = (ListView) findViewById(R.id.message_list);
+        listView.setAdapter(adapter);
+        listView.setStackFromBottom(true);
+        
+        mMessageListArray.add(new SpannableString(message));
+        adapter.notifyDataSetChanged();
+    }
+    
+    private final void printMsg(final LibretalkMessageData message)
+    {
+        ArrayAdapter<SpannableString> adapter = new ArrayAdapter<SpannableString>(this, android.R.layout.simple_list_item_1,
+                mMessageListArray);
+        ListView listView = (ListView) findViewById(R.id.message_list);
+        listView.setAdapter(adapter);
+        listView.setStackFromBottom(true);
+        
+        final String output = message.getSenderTag() + ": " + message.getData();
+        SpannableString formattedText = new SpannableString(output);
+        formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
+        		              output.indexOf(message.getSenderTag()),
+        		              output.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+        		              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        
+        Log.d("mainactivity", "COLOR IS" + LibretalkMessageData.getColorFromString(message.getSenderTag()));
+        mMessageListArray.add(formattedText);
+        adapter.notifyDataSetChanged();
+    }
+    
+    private final void showErrDialog(final String title, final String msg, final String buttonText)
+    {
+        final AlertDialog.Builder bob = new AlertDialog.Builder(this);
+        
+        // TODO replace hardcoded strings with Android Resources.
+        bob.setTitle(title);
+        bob.setMessage(msg);
+        bob.setNeutralButton(buttonText, new DialogInterface.OnClickListener()
+        {             
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {                    
+                finish();                  
+            }
+        }).show();
+        
+    }
+    //XXX NETWORKING CODE END
     
     public void addFriend(View view)
     {
@@ -294,7 +501,7 @@ public class MainActivity extends Activity {
     	}
     	
         
-        mFriendsListArray.add(new String(firstName));
+        mFriendsListArray.add(new SpannableString(firstName));
     	
     	LibretalkUser user = new LibretalkUser();
     	user.getProfile().setName(firstName);
@@ -305,7 +512,7 @@ public class MainActivity extends Activity {
         	this.mFriendsListArray.remove(0);
         }
     	
-    	mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+    	mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
     }
     
@@ -335,7 +542,7 @@ public class MainActivity extends Activity {
     
     public void deleteFriend(String friend) {
         mFriendsListArray.remove(friend);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+        mDrawerList.setAdapter(new ArrayAdapter<SpannableString>(this,
                 R.layout.drawer_list_item, mFriendsListArray));
         Toast.makeText(getBaseContext(), "Friend Removed", Toast.LENGTH_LONG).show();
     }

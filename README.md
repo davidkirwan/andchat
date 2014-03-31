@@ -5,10 +5,11 @@ The Coderdojo is an open source, volunteer led, global movement of free coding c
 
 For more information see: http://coderdojo.com
 
+See AUTHORS for the list of authors who worked on this application at the Waterford Coderdojo (rising stars!!!)
 
+![Change-name](http://davidkirwan.github.io/andchat/libretalk-change-name.png)
+
+![Firstmessage](http://davidkirwan.github.io/andchat/libretalk-first-message.png)
 
 ![Libretalk](http://davidkirwan.github.io/andchat/andchat-architecture.png)
-
-The source code relating to v7 support library should be removed from this branch now. All source related to v7 is contained
-within the branch 'v7-support-lib-integration'
 
