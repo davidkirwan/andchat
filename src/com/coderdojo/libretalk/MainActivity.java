@@ -102,8 +102,8 @@ public class MainActivity extends Activity {
 	private LibretalkMessageReceiver receiver;
 	private LibretalkMessageSender sender;
 	
-	private static final String DEFAULT_SENDER_TAG = "Anon";
-	private String nick = DEFAULT_SENDER_TAG;
+	private static final String DEFAULT_NICKNAME = "Anon";
+	private String nick = DEFAULT_NICKNAME;
 	//XXX NETWORKING CODE END
 
     @Override
