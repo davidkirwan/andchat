@@ -36,6 +36,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -437,15 +438,17 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
         listView.setStackFromBottom(true);
         
-        final String output = message.getSenderTag() + ": " + message.getData();
-        SpannableString formattedText = new SpannableString(output);
+        final String sourceMessage = message.getSenderTag() + ": " + message.getData();
+        final SpannableString formattedText = new SpannableString(sourceMessage);
+        
         formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
-        		              output.indexOf(message.getSenderTag()),
-        		              output.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
-        		              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                              sourceMessage.indexOf(message.getSenderTag()),
+                              sourceMessage.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+                              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                             );
         
-        
-        Log.d("mainactivity", "COLOR IS" + LibretalkMessageData.getColorFromString(message.getSenderTag()));
+
+  
         mMessageListArray.add(formattedText);
         adapter.notifyDataSetChanged();
     }
