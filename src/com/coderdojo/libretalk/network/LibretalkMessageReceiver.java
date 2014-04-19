@@ -1,6 +1,7 @@
 package com.coderdojo.libretalk.network;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import android.os.Handler;
 import android.util.Log;
@@ -139,18 +140,22 @@ public final class LibretalkMessageReceiver
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties props, final byte[] body) 
                 throws IOException
         {
+        	
+        	String message = "InvalidMessage:none";
         	//TODO Requires cleanup
             try
             {
-				handler.post(new PostMessageTask(LibretalkMessageData.deserialize(body)));
+            	message = new String(body, "UTF-8");
+				handler.post(new PostMessageTask(LibretalkMessageData.deserialize(message)));
 			}
-            catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+            catch (UnsupportedEncodingException ex)
+            {
+            	ex.printStackTrace();
+            }
             
             connection.getChannel().basicAck(envelope.getDeliveryTag(), false);
             
-            Log.d("libretalk::LibretalkMessageReceiver::MessageConsumer", "Received Msg");
+            Log.d("libretalk::LibretalkMessageReceiver::MessageConsumer", "Received Msg" + message );
         }
         
         

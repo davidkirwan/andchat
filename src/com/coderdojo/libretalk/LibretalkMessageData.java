@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 
+import com.google.gson.Gson;
+
 import android.graphics.Color;
 import android.util.Log;
 
@@ -16,7 +18,9 @@ public final class LibretalkMessageData implements Serializable
 	/**
 	 *  [!] AUTO GENERATED DO NOT MODIFY 
 	 */
-	private static final long serialVersionUID = 2649285673568863822L;
+	//private static final long serialVersionUID = 2649285673568863822L;
+	@SuppressWarnings("unused")
+	private static final byte CLASS_VERSION = 0x01;
 	
 	
 	private final String data;
@@ -69,16 +73,30 @@ public final class LibretalkMessageData implements Serializable
 	}
 
 	
-	public static final byte[] serialize(final LibretalkMessageData o) throws IOException
+	/*public static final byte[] serialize(final LibretalkMessageData o) throws IOException
 	{
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		final ObjectOutputStream objOut = new ObjectOutputStream(out);
 		
 		objOut.writeObject(o);
 		return out.toByteArray();		
+	}*/
+	
+	public static final String serialize(final LibretalkMessageData msg)
+	{
+		Gson gson = new Gson();
+		return gson.toJson(msg);
 	}
 	
-	public static final LibretalkMessageData deserialize(final byte[] data) throws 
+	
+	public static final LibretalkMessageData deserialize(final String json)
+	{
+		Gson gson = new Gson();
+		return gson.fromJson(json, LibretalkMessageData.class);
+	}
+	
+	
+	/*public static final LibretalkMessageData deserialize(final byte[] data) throws 
 																			StreamCorruptedException, 
 																			IOException, 
 																			ClassNotFoundException
@@ -88,7 +106,7 @@ public final class LibretalkMessageData implements Serializable
 		
 		return (LibretalkMessageData) objInput.readObject();
 		
-	}
+	}*/
 	
 	@Override
 	public final String toString()

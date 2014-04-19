@@ -173,7 +173,7 @@ public class MainActivity extends Activity {
         Random randomGenerator = new Random();
         long tempuserhash = randomGenerator.nextLong();
         
-        this.connection = new LibretalkConnection("10.0.0.1", tempuserhash);
+        this.connection = new LibretalkConnection("10.0.2.2", tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
@@ -411,20 +411,7 @@ public class MainActivity extends Activity {
     		}
     		
     		final LibretalkMessageData data = new LibretalkMessageData(this.nick, message);
-    	    try
-    	    {
-				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
-			}
-    	    catch (IOException e)
-    	    {
-				showErrDialog("Fatal Error - " + e.getClass().getSimpleName(),
-						      "A critical error has occurred whilst serializing message data (sending a message)" +
-				              e.getMessage(),
-				              ":'("
-				              );
-
-				e.printStackTrace();
-			}
+    	    this.sender.send(LibretalkMessageData.serialize(data).getBytes(), this.connection.getUserTag());
     	}
     	//XXX NETWORKING CODE END
     }
