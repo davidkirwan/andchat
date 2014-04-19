@@ -71,16 +71,7 @@ public final class LibretalkMessageData implements Serializable
 	{
 		return data;
 	}
-
 	
-	/*public static final byte[] serialize(final LibretalkMessageData o) throws IOException
-	{
-		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		final ObjectOutputStream objOut = new ObjectOutputStream(out);
-		
-		objOut.writeObject(o);
-		return out.toByteArray();		
-	}*/
 	
 	public static final String serialize(final LibretalkMessageData msg)
 	{
@@ -95,18 +86,6 @@ public final class LibretalkMessageData implements Serializable
 		return gson.fromJson(json, LibretalkMessageData.class);
 	}
 	
-	
-	/*public static final LibretalkMessageData deserialize(final byte[] data) throws 
-																			StreamCorruptedException, 
-																			IOException, 
-																			ClassNotFoundException
-	{
-		final ByteArrayInputStream input = new ByteArrayInputStream(data);
-		final ObjectInputStream objInput = new ObjectInputStream(input);
-		
-		return (LibretalkMessageData) objInput.readObject();
-		
-	}*/
 	
 	@Override
 	public final String toString()
