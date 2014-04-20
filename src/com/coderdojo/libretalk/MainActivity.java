@@ -36,6 +36,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -102,8 +103,8 @@ public class MainActivity extends Activity {
 	private LibretalkMessageReceiver receiver;
 	private LibretalkMessageSender sender;
 	
-	private static final String DEFAULT_SENDER_TAG = "Anon";
-	private String nick = DEFAULT_SENDER_TAG;
+	private static final String DEFAULT_NICKNAME = "Anon";
+	private String nick = DEFAULT_NICKNAME;
 	//XXX NETWORKING CODE END
 
     @Override
@@ -173,7 +174,7 @@ public class MainActivity extends Activity {
         Random randomGenerator = new Random();
         long tempuserhash = randomGenerator.nextLong();
         
-        this.connection = new LibretalkConnection("10.0.0.1", tempuserhash);
+        this.connection = new LibretalkConnection("10.0.2.2", tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
@@ -411,20 +412,7 @@ public class MainActivity extends Activity {
     		}
     		
     		final LibretalkMessageData data = new LibretalkMessageData(this.nick, message);
-    	    try
-    	    {
-				this.sender.send(LibretalkMessageData.serialize(data), this.connection.getUserTag());
-			}
-    	    catch (IOException e)
-    	    {
-				showErrDialog("Fatal Error - " + e.getClass().getSimpleName(),
-						      "A critical error has occurred whilst serializing message data (sending a message)" +
-				              e.getMessage(),
-				              ":'("
-				              );
-
-				e.printStackTrace();
-			}
+    	    this.sender.send(LibretalkMessageData.serialize(data).getBytes(), this.connection.getUserTag());
     	}
     	//XXX NETWORKING CODE END
     }
@@ -450,15 +438,17 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
         listView.setStackFromBottom(true);
         
-        final String output = message.getSenderTag() + ": " + message.getData();
-        SpannableString formattedText = new SpannableString(output);
+        final String sourceMessage = message.getSenderTag() + ": " + message.getData();
+        final SpannableString formattedText = new SpannableString(sourceMessage);
+        
         formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
-        		              output.indexOf(message.getSenderTag()),
-        		              output.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
-        		              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                              sourceMessage.indexOf(message.getSenderTag()),
+                              sourceMessage.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+                              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                             );
         
-        
-        Log.d("mainactivity", "COLOR IS" + LibretalkMessageData.getColorFromString(message.getSenderTag()));
+
+  
         mMessageListArray.add(formattedText);
         adapter.notifyDataSetChanged();
     }

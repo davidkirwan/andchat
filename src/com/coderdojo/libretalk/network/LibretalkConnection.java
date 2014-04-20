@@ -121,7 +121,7 @@ public final class LibretalkConnection
                     fac.setHost(host);
                     fac.setPassword("guest");
                     fac.setUsername("guest");
-                    fac.setConnectionTimeout(2500);
+                    fac.setConnectionTimeout(5000);
                     
                     connection = fac.newConnection();
                     channel = connection.createChannel();

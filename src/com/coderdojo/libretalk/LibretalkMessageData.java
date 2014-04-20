@@ -7,9 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+
+import com.google.gson.Gson;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -19,7 +18,9 @@ public final class LibretalkMessageData implements Serializable
 	/**
 	 *  [!] AUTO GENERATED DO NOT MODIFY 
 	 */
-	private static final long serialVersionUID = 2649285673568863822L;
+	//private static final long serialVersionUID = 2649285673568863822L;
+	@SuppressWarnings("unused")
+	private static final byte CLASS_VERSION = 0x01;
 	
 	
 	private final String data;
@@ -70,28 +71,21 @@ public final class LibretalkMessageData implements Serializable
 	{
 		return data;
 	}
-
 	
-	public static final byte[] serialize(final LibretalkMessageData o) throws IOException
+	
+	public static final String serialize(final LibretalkMessageData msg)
 	{
-		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		final ObjectOutputStream objOut = new ObjectOutputStream(out);
-		
-		objOut.writeObject(o);
-		return out.toByteArray();		
+		Gson gson = new Gson();
+		return gson.toJson(msg);
 	}
 	
-	public static final LibretalkMessageData deserialize(final byte[] data) throws 
-																			StreamCorruptedException, 
-																			IOException, 
-																			ClassNotFoundException
+	
+	public static final LibretalkMessageData deserialize(final String json)
 	{
-		final ByteArrayInputStream input = new ByteArrayInputStream(data);
-		final ObjectInputStream objInput = new ObjectInputStream(input);
-		
-		return (LibretalkMessageData) objInput.readObject();
-		
+		Gson gson = new Gson();
+		return gson.fromJson(json, LibretalkMessageData.class);
 	}
+	
 	
 	@Override
 	public final String toString()
