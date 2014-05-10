@@ -36,6 +36,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -174,7 +175,15 @@ public class MainActivity extends Activity {
         Random randomGenerator = new Random();
         long tempuserhash = randomGenerator.nextLong();
         
-        this.connection = new LibretalkConnection("10.0.2.2", tempuserhash);
+
+        String host = getString(R.string.ipaddress);
+        Log.v("Libretalk", host);
+        String user = getString(R.string.rabbituser);
+    	Log.v("Libretalk", user);
+    	String password = getString(R.string.rabbitpassword);
+    	Log.v("Libretalk", password);
+        
+        this.connection = new LibretalkConnection(host, user, password, tempuserhash);
         
         final ILibretalkMessageEventHandler eventHandler = new ILibretalkMessageEventHandler()
         {
