@@ -31,8 +31,8 @@
     <string name="delete_dialog_title">Delete Friend</string>
     <string name="delete_message_title">Delete Message</string>
     
-    <string name="ipaddress">donttase.me</string>
-    <string name="rabbituser">coderdojo</string>
-    <string name="rabbitpassword">libretalk</string>
+    <string name="ipaddress">10.0.0.1</string>
+    <string name="rabbituser">guest</string>
+    <string name="rabbitpassword">guest</string>
 
 </resources>
