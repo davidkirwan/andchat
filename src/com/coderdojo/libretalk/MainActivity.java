@@ -450,11 +450,31 @@ public class MainActivity extends Activity {
         final String sourceMessage = message.getSenderTag() + ": " + message.getData();
         final SpannableString formattedText = new SpannableString(sourceMessage);
         
-        formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
-                              sourceMessage.indexOf(message.getSenderTag()),
-                              sourceMessage.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
-                              Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                             );
+        if (message.getData().startsWith(">"))
+        {
+            
+            formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
+                                  sourceMessage.indexOf(message.getSenderTag()),
+                                  sourceMessage.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+                                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                 );
+            
+            
+            formattedText.setSpan(new ForegroundColorSpan(Color.rgb(120, 153, 34)),
+                                  sourceMessage.indexOf(message.getData()),
+                                  sourceMessage.indexOf(message.getData()) + message.getData().length(),
+                                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                 );
+        }
+        else
+        {
+            
+            formattedText.setSpan(new ForegroundColorSpan(LibretalkMessageData.getColorFromString(message.getSenderTag())),
+                                  sourceMessage.indexOf(message.getSenderTag()),
+                                  sourceMessage.indexOf(message.getSenderTag()) + message.getSenderTag().length(),
+                                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                 );
+        }
         
 
   
