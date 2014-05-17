@@ -30,5 +30,9 @@
     <string name="confirmation_message">Are you sure?</string>
     <string name="delete_dialog_title">Delete Friend</string>
     <string name="delete_message_title">Delete Message</string>
+    
+    <string name="ipaddress">10.0.0.1</string>
+    <string name="rabbituser">guest</string>
+    <string name="rabbitpassword">guest</string>
 
 </resources>

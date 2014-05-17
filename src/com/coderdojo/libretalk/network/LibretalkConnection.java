@@ -2,9 +2,11 @@ package com.coderdojo.libretalk.network;
 
 import java.io.IOException;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.coderdojo.libretalk.R;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -17,6 +19,8 @@ public final class LibretalkConnection
     public static final String ROUTING_KEY = "libretalk.user.";
     
     private final String host;
+    private final String user;
+    private final String pass;
     private final String userTag;
     private final Object lock = new Object();
     
@@ -26,9 +30,11 @@ public final class LibretalkConnection
     private Channel channel;
     
     
-    public LibretalkConnection(final String host, final long uid)
+    public LibretalkConnection(final String host, final String user, final String pass, final long uid)
     {
         this.host = host;
+        this.user = user;
+        this.pass = pass;
         this.userTag = ROUTING_KEY + Long.toString(uid);
     }
     
@@ -116,11 +122,11 @@ public final class LibretalkConnection
             else
             {
                 try
-                {
+                {                    
                     final ConnectionFactory fac = new ConnectionFactory();
                     fac.setHost(host);
-                    fac.setPassword("guest");
-                    fac.setUsername("guest");
+                    fac.setPassword(user);
+                    fac.setUsername(pass);
                     fac.setConnectionTimeout(5000);
                     
                     connection = fac.newConnection();
